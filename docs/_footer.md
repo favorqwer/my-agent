@@ -3,9 +3,9 @@
     <div class="nav-card">
       <div class="nav-card-header">
         <span class="material-icons nav-card-icon">bug_report</span>
-        <span class="nav-card-title">Something broken/unclear?</span>
+        <span class="nav-card-title">有东西坏了／不清楚？</span>
       </div>
-      <p class="nav-card-description">Open an issue on GitHub!</p>
+      <p class="nav-card-description">到 GitHub 上开一个 issue！</p>
     </div>
   </a>
 
@@ -13,9 +13,9 @@
     <div class="nav-card">
       <div class="nav-card-header">
         <span class="material-icons nav-card-icon">help</span>
-        <span class="nav-card-title">Open-ended discussions</span>
+        <span class="nav-card-title">开放式讨论</span>
       </div>
-      <p class="nav-card-description">Join our Slack!</p>
+      <p class="nav-card-description">加入我们的 Slack！</p>
     </div>
   </a>
 </div>

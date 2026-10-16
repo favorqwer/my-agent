@@ -1,10 +1,10 @@
 # Local
 
-!!! note "Mini run script"
+!!! note "Mini 运行脚本"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py)
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/run/mini.py"

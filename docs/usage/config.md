@@ -1,39 +1,39 @@
 # `mini-extra config`
 
-!!! abstract "Overview"
+!!! abstract "概览"
 
-    * `mini-extra config` is a utility to manage the global configuration file.
-    * Quickly start the it with `mini-extra config` or `mini-e config`.
+    * `mini-extra config` 是用于管理全局配置文件的实用工具。
+    * 可以用 `mini-extra config` 或 `mini-e config` 快速启动它。
 
-## Commands
+## 命令
 
 ### `setup`
 
-Interactive setup wizard that helps you configure your default model and API keys.
+交互式设置向导，帮助你配置默认模型和 API key。
 
 ```bash
 mini-extra config setup
 ```
 
-This will prompt you for:
+它会提示你输入：
 
-1. Your default model (e.g., `anthropic/claude-sonnet-4-5-20250929`)
-2. Your API key name and value (e.g., `ANTHROPIC_API_KEY`)
+1. 你的默认模型（例如 `anthropic/claude-sonnet-4-5-20250929`）
+2. 你的 API key 名称和值（例如 `ANTHROPIC_API_KEY`）
 
 ### `set`
 
-Set a specific key in the global config file.
+在全局配置文件中设置指定的键。
 
 ```bash
-# example: set default model
+# 示例：设置默认模型
 mini-extra config set MSWEA_MODEL_NAME anthropic/claude-sonnet-4-5-20250929
-# or interactively
+# 或交互式设置
 mini-extra config set
 ```
 
 ### `unset`
 
-Remove a key from the global config file.
+从全局配置文件中删除某个键。
 
 ```bash
 mini-extra config unset MSWEA_MODEL_NAME
@@ -41,22 +41,22 @@ mini-extra config unset MSWEA_MODEL_NAME
 
 ### `edit`
 
-Open the global config file in your default editor (uses `$EDITOR` or `nano`).
+用默认编辑器打开全局配置文件（使用 `$EDITOR` 或 `nano`）。
 
 ```bash
 mini-extra config edit
 ```
 
-## Configuration keys
+## 配置键
 
-For more configuration options, see [global configuration](../advanced/global_configuration.md).
+更多配置选项请参见[全局配置](../advanced/global_configuration.md)。
 
-## Implementation
+## 实现
 
-??? note "Run script"
+??? note "运行脚本"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/utilities/config.py)
-    - [API reference](../reference/run/config.md)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/utilities/config.py)
+    - [API 参考](../reference/run/config.md)
 
     ```python
     --8<-- "src/minisweagent/run/utilities/config.py"

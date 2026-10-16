@@ -1,10 +1,10 @@
-# Entry points / run scripts
+# 入口点／运行脚本
 
-## Work locally (i.e., without a sandbox)
+## 在本地运行（即不使用沙箱）
 
-* `hello_world.py` - Extremely simple example of how to use the `default.py` agent.
-* `mini.py` - Uses the `interactive.py` agent.
+* `hello_world.py` - 如何使用 `default.py` 智能体的极简示例。
+* `mini.py` - 使用 `interactive.py` 智能体。
 
-## Extras
+## 额外组件
 
-* `extra/swebench.py` - Benchmark the performance of the `default.py` agent.
+* `extra/swebench.py` - 对 `default.py` 智能体的性能进行基准评测。

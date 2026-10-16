@@ -1,12 +1,11 @@
-# Environments
+# 环境
 
-* `local.py` - Execute code with `subprocess.run`
-* `docker.py` - Execute code in a docker or podman container
-* `singularity.py` - Execute code in a singularity or apptainer container
+* `local.py` - 用 `subprocess.run` 执行代码
+* `docker.py` - 在 docker 或 podman 容器中执行代码
+* `singularity.py` - 在 singularity 或 apptainer 容器中执行代码
 
-## Extras
+## 额外组件
 
-* `extra/swerex_docker.py` - Execute environments with docker via [swerex](https://github.com/swe-agent/swe-rex)
-* `extra/swerex_modal.py` - Execute environments with [Modal](https://modal.com) via [swerex](https://github.com/swe-agent/swe-rex)
-* `extra/bubblewrap.py` - Execute environments with [bubblewrap](https://github.com/containers/bubblewrap)
-
+* `extra/swerex_docker.py` - 通过 [swerex](https://github.com/swe-agent/swe-rex) 用 docker 执行环境
+* `extra/swerex_modal.py` - 通过 [swerex](https://github.com/swe-agent/swe-rex) 在 [Modal](https://modal.com) 上执行环境
+* `extra/bubblewrap.py` - 用 [bubblewrap](https://github.com/containers/bubblewrap) 执行环境

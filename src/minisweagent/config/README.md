@@ -1,8 +1,8 @@
-# Configs
+# 配置
 
-* `mini.yaml` - Default config for `mini`/`agents/interactive.py` agent.
-* `default.yaml` - Default config for the `default.py` agent.
+* `mini.yaml` - `mini`／`agents/interactive.py` 智能体的默认配置。
+* `default.yaml` - `default.py` 智能体的默认配置。
 
-## Benchmarks
+## 基准评测
 
-* `benchmarks/swebench.yaml` - Config for the `run/benchmarks/swebench.py` entry point.
+* `benchmarks/swebench.yaml` - `run/benchmarks/swebench.py` 入口点的配置。

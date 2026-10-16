@@ -1,16 +1,16 @@
 # Model Utilities
 
-!!! note "Model Utilities"
+!!! note "模型工具函数"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/__init__.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/__init__.py)
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/models/__init__.py"
         ```
 
-Convenience functions for selecting and configuring models.
+用于选择和配置模型的便捷函数。
 
 ::: minisweagent.models.get_model
 

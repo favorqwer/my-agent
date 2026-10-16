@@ -1,53 +1,53 @@
-# Global configuration
+# 全局配置
 
-!!! abstract "Configuring mini"
+!!! abstract "配置 mini"
 
-    * This guide shows how to configure the `mini` agent's global settings (API keys, default model, etc.).
-      Basically anything that is set as environment variables or similar.
-    * You should already be familiar with the [quickstart guide](../quickstart.md).
-    * For more agent specific settings, see the [yaml configuration file guide](yaml_configuration.md).
+    * 本指南介绍如何配置 `mini` 智能体的全局设置（API key、默认模型等）。
+      基本上就是任何以环境变量或类似方式设置的内容。
+    * 你应该已经熟悉[快速入门指南](../quickstart.md)了。
+    * 更多与智能体相关的设置请参见[Yaml 配置文件指南](yaml_configuration.md)。
 
-!!! tip "Setting up models"
+!!! tip "设置模型"
 
-    Setting up models is also covered in the [quickstart guide](../quickstart.md).
+    模型的设置也在[快速入门指南](../quickstart.md)中有所介绍。
 
-## Setting global configuration
+## 设置全局配置
 
-All global configuration can be either set as environment variables, or in the `.env` file (the exact location is printed when you run `mini`).
-Environment variables take precedence over variables set in the `.env` file.
+所有全局配置既可以设为环境变量，也可以写在 `.env` 文件中（确切位置会在你运行 `mini` 时打印出来）。
+环境变量的优先级高于 `.env` 文件中设置的变量。
 
-We provide several helper functions to update the global configuration.
+我们提供了几个辅助函数来更新全局配置。
 
-For example, to set the default model and API keys, you can run:
+例如，要设置默认模型和 API key，你可以运行：
 
 ```bash
 mini-extra config setup
 ```
 
-or to update specific settings:
+或者更新特定设置：
 
 ```
 mini-extra config set KEY VALUE
-# e.g.,
+# 例如：
 mini-extra config set MSWEA_MODEL_NAME "anthropic/claude-sonnet-4-5-20250929"
 mini-extra config set ANTHROPIC_API_KEY "sk-..."
 ```
 
-or to unset a key:
+或者删除某个键：
 
 ```bash
 mini-extra config unset KEY
-# e.g.,
+# 例如：
 mini-extra config unset ANTHROPIC_API_KEY
 ```
 
-You can also edit the `.env` file directly and we provide a helper function for that:
+你也可以直接编辑 `.env` 文件，我们为此也提供了辅助函数：
 
 ```bash
 mini-extra config edit
 ```
 
-To set environment variables (recommended for temporary experimentation or API keys):
+设置环境变量（推荐用于临时实验或存放 API key）：
 
 ```bash
 export KEY="value"
@@ -55,84 +55,84 @@ export KEY="value"
 setx KEY "value"
 ```
 
-## Models, keys, costs
+## 模型、密钥、成本
 
-!!! tip "See also"
+!!! tip "另请参阅"
 
-    Read the [quickstart guide](../quickstart.md) first—it already covers most of this.
+    请先阅读[快速入门指南](../quickstart.md)——它已经涵盖了这里的大部分内容。
 
 ```bash
-# Default model name
-# (default: not set)
+# 默认模型名称
+# （默认值：未设置）
 MSWEA_MODEL_NAME="anthropic/claude-sonnet-4-5-20250929"
 ```
 
-To ignore errors from cost tracking checks (for example for free models), set:
+要忽略成本追踪检查产生的错误（例如使用免费模型时），请设置：
 
 ```bash
-# CAREFUL: This can lead to unmanaged spending!
+# 注意：这可能导致支出失控！
 MSWEA_COST_TRACKING="ignore_errors"
 ```
 
-To register extra models to litellm (see [local models](../models/local_models.md) for more details), you can either specify the path in the agent file, or set
+要向 litellm 注册额外模型（详见[本地模型](../models/local_models.md)），你可以在智能体文件中指定路径，或者设置
 
 ```bash
 LITELLM_MODEL_REGISTRY_PATH="/path/to/your/model/registry.json"
 ```
 
-Global cost limits:
+全局成本上限：
 
 ```bash
-# Global limit on number of model calls (0 = no limit)
-# (default: 0)
+# 模型调用次数的全局上限（0 = 不限制）
+# （默认值：0）
 MSWEA_GLOBAL_CALL_LIMIT="100"
 
-# Global cost limit in dollars (0 = no limit)
-# (default: 0)
+# 以美元计的全局成本上限（0 = 不限制）
+# （默认值：0）
 MSWEA_GLOBAL_COST_LIMIT="10.00"
 
-# Number of retry attempts for model API calls
-# (default: 10)
+# 模型 API 调用的重试次数
+# （默认值：10）
 MSWEA_MODEL_RETRY_STOP_AFTER_ATTEMPT="10"
 ```
 
-## Default config files
+## 默认配置文件
 
 ```bash
-# Set a custom directory for agent config files in addition to the builtin ones
-# This allows to specify them by names
+# 在内置配置之外，为智能体配置文件设置自定义目录
+# 这样就能通过名称来指定它们
 MSWEA_CONFIG_DIR="/path/to/your/own/config/dir"
 
-# Config path for mini run script
-# (default: package_dir / "config" / "mini.yaml")
+# mini 运行脚本的配置路径
+# （默认值：package_dir / "config" / "mini.yaml"）
 MSWEA_MINI_CONFIG_PATH="/path/to/your/own/config"
 
-# Custom style path for trajectory inspector
-# (default: package_dir / "config" / "inspector.tcss")
+# 轨迹 inspector 的自定义样式路径
+# （默认值：package_dir / "config" / "inspector.tcss"）
 MSWEA_INSPECTOR_STYLE_PATH="/path/to/your/inspector/style.tcss"
 ```
 
-### Settings for environments
+### 环境相关设置
 
 ```bash
-# Path/name to the singularity/apptainer executable
-# (default: "singularity")
+# singularity/apptainer 可执行文件的路径／名称
+# （默认值："singularity"）
 MSWEA_SINGULARITY_EXECUTABLE="singularity"
 
-# Path/name to the docker executable
-# (default: "docker")
+# docker 可执行文件的路径／名称
+# （默认值："docker"）
 MSWEA_DOCKER_EXECUTABLE="docker"
 
-# Path/name to the bubblewrap executable
-# (default: "bwrap")
+# bubblewrap 可执行文件的路径／名称
+# （默认值："bwrap"）
 MSWEA_BUBBLEWRAP_EXECUTABLE="bwrap"
 ```
 
-## Default run files
+## 默认运行文件
 
 ```bash
-# Default run script entry point for the main CLI
-# (default: "minisweagent.run.mini")
+# 主 CLI 的默认运行脚本入口点
+# （默认值："minisweagent.run.mini"）
 MSWEA_DEFAULT_RUN="minisweagent.run.mini"
 ```
 

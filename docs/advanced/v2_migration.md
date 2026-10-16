@@ -1,57 +1,57 @@
-# v2.0 Migration Guide
+# v2.0 迁移指南
 
-!!! danger "Breaking Changes"
+!!! danger "破坏性变更"
 
-    **mini-swe-agent v2.0** brings major improvements but requires migration.
-    To stay with v1.x, pin your dependency: `mini-swe-agent~=1.0`.
-    See the [v1 documentation](https://mini-swe-agent.com/v1/) or the [v1 branch on GitHub](https://github.com/SWE-agent/mini-swe-agent/tree/v1).
+    **mini-swe-agent v2.0** 带来了重大改进，但需要进行迁移。
+    如果要继续使用 v1.x，请锁定依赖版本：`mini-swe-agent~=1.0`。
+    请参阅 [v1 文档](https://mini-swe-agent.com/v1/) 或 [GitHub 上的 v1 分支](https://github.com/SWE-agent/mini-swe-agent/tree/v1)。
 
-## What's new
+## 新特性
 
-- **Tool calls**: Native tool calling API support (now the default)
-- **Multimodal input**: Support for images and other content types
+- **工具调用（Tool calls）**：原生工具调用 API 支持（现已成为默认方式）
+- **多模态输入**：支持图片和其他内容类型
 
-## What do I need to change?
+## 我需要改什么？
 
-> I only use the mini CLI with default configs
+> 我只用默认配置的 mini CLI
 
-No changes needed.
+无需改动。
 
-> I use custom configs
+> 我使用自定义配置
 
-You might need to move some config keys. See [Config changes](#config-changes).
+你可能需要移动一些配置键。请参见[配置变更](#配置变更)。
 
-> I parse/analyze trajectories
+> 我要解析／分析轨迹
 
-Some metadata fields moved to `extra`. See [Trajectory format](#trajectory-format).
+一些元数据字段移到了 `extra` 中。请参见[轨迹格式](#轨迹格式)。
 
-> I use the python bindings or built custom subclasses
+> 我使用 Python 绑定，或者构建了自定义子类
 
-You will need to refactor. An agent can refactor your code based on the instructions below.
+你需要重构。可以让智能体根据下面的说明来重构你的代码。
 
-## Config changes
+## 配置变更
 
-If you only changed `system_template` and `instance_template`, no changes needed.
+如果你只修改过 `system_template` 和 `instance_template`，则无需改动。
 
-**Move from `agent` to `model`:**
+**从 `agent` 移到 `model`：**
 
-- `observation_template` (renamed from `action_observation_template`)
+- `observation_template`（由 `action_observation_template` 改名而来）
 - `format_error_template`
-- `action_regex` (only for text-based parsing)
+- `action_regex`（仅用于基于文本的解析）
 
-**Removed:**
+**已移除：**
 
 - `timeout_template`
 
-**Code block format changed:**
+**代码块格式变更：**
 
-Default action regex changed from `` ```bash `` to `` ```mswea_bash_command `` to avoid conflicts with bash examples in prompts.
+默认的动作正则从 `` ```bash `` 改为 `` ```mswea_bash_command ``，以避免与提示词中的 bash 示例冲突。
 
-**Completion signal changed:**
+**完成信号变更：**
 
-From `echo MINI_SWE_AGENT_FINAL_OUTPUT` to `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`.
+从 `echo MINI_SWE_AGENT_FINAL_OUTPUT` 改为 `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`。
 
-**New structure:**
+**新结构：**
 
 ```yaml
 agent:
@@ -68,7 +68,7 @@ model:
   format_error_template: "..."
 ```
 
-**CLI now supports multiple configs and key-value overrides:**
+**CLI 现在支持多个配置和键值覆盖：**
 
 ```bash
 mini -c mini.yaml -c model.model_kwargs.temperature=0.5
@@ -77,181 +77,181 @@ mini -c mini.yaml -c /path/to/model.yaml
 ```
 
 !!! warning
-    If you use `-c`, you will not load the full default config, so make sure to always specify your config file in addition to any overrides/updates.
+    如果你使用 `-c`，就不会加载完整的默认配置，因此请务必在指定覆盖／更新项的同时，始终指定你的配置文件。
 
-## Tool calling
+## 工具调用
 
-v2.0 uses native tool calling by default (instead of regex-based text parsing).
+v2.0 默认使用原生工具调用（而不是基于正则的文本解析）。
 
-**What's the difference?**
+**有什么区别？**
 
-- Tool calling (default): Model uses native tool calling API to invoke a "bash" tool
-- Text-based (legacy): Model outputs commands in markdown code blocks (or similar), regex extracts them
+- 工具调用（默认）：模型使用原生工具调用 API 来调用一个“bash”工具
+- 基于文本（旧方式）：模型在 markdown 代码块（或类似格式）中输出命令，再用正则提取
 
-**How to use it:**
+**怎么用：**
 
-Tool calling is the default. The CLI uses `mini.yaml` and `swebench.yaml` which are configured for tool calling.
+工具调用是默认方式。CLI 使用为工具调用配置的 `mini.yaml` 和 `swebench.yaml`。
 
 ```bash
-# Default (tool calling)
+# 默认（工具调用）
 mini
 python -m minisweagent.run.benchmarks.swebench
 mini-extra swebench
 
-# Text-based parsing
+# 基于文本的解析
 mini-extra swebench -c swebench_backticks.yaml
 mini -c mini_textbased.yaml
 ```
 
-**For custom configs:**
+**对于自定义配置：**
 
 ```yaml
 model:
-  model_class: litellm  # tool calling (default)
+  model_class: litellm  # 工具调用（默认）
   model_name: anthropic/claude-sonnet-4-5-20250929
 
-# or for text-based:
+# 或者使用基于文本的方式：
 model:
   model_class: litellm_textbased
   action_regex: "```mswea_bash_command\\s*\\n(.*?)\\n```"
 ```
 
-## Trajectory format
+## 轨迹格式
 
-- In v1, all messages in the trajectory's `messages` field were "hand-formatted", i.e., had a `content: str` and `role: str` field.
-- **In v2, we use the model's native output as the basis for the message and only add the `extra` field to it**.
+- 在 v1 中，轨迹的 `messages` 字段中的所有消息都是“手工格式化”的，即都带有 `content: str` 和 `role: str` 字段。
+- **在 v2 中，我们以模型的原生输出作为消息的基础，只额外添加 `extra` 字段**。
 
-If you use a model that uses the standard `/completion` endpoint, then you will still always have a `content: str` and `role: str` field.
-However, if you use the [`/response`](https://platform.openai.com/docs/api-reference/responses) endpoint, then things might look different.
+如果你使用的模型走标准的 `/completion` 端点，那么你仍然总是会有 `content: str` 和 `role: str` 字段。
+但如果你使用 [`/response`](https://platform.openai.com/docs/api-reference/responses) 端点，情况可能就不一样了。
 
-In other words: the exact message structure depends on the model you use.
+换句话说：确切的消息结构取决于你使用的模型。
 
-* Advantage: Any model message structure is supported
-* Disadvantage: If you parse trajectories, you might need to adapt to the message structure of the model you use.
+* 优点：支持任何模型的消息结构
+* 缺点：如果你要解析轨迹，可能需要适配所用模型的消息结构。
 
-## Removed & renamed
+## 移除与重命名
 
-**Removed features:**
+**移除的功能：**
 
-- **"Visual" UI**: The `-v` flag for the alternate, textual based `mini -v` CLI is no longer supported. This was a tough decision to make, but in the end the visual mode didn't see the adoption we wanted and is significantly more complex to maintain than the default interface.
-- **Rotating API keys**: `ANTHROPIC_API_KEYS` with `::` separator no longer supported. Use single `ANTHROPIC_API_KEY`.
-- **`github_issue` run script**: The dedicated `github_issue.py` run script was removed. Use the `mini` CLI instead.
-- **`MSWEA_MODEL_API_KEY` environment variable**: No longer used to override API keys.
+- **“可视”界面**：替代性的、基于文本的 `mini -v` CLI 的 `-v` 参数不再受支持。这是一个艰难的决定，但最终可视模式没有获得我们期望的采用率，而且维护成本远高于默认界面。
+- **轮换 API key**：不再支持用 `::` 分隔的 `ANTHROPIC_API_KEYS`。请使用单个 `ANTHROPIC_API_KEY`。
+- **`github_issue` 运行脚本**：专用的 `github_issue.py` 运行脚本已被移除。请改用 `mini` CLI。
+- **`MSWEA_MODEL_API_KEY` 环境变量**：不再用于覆盖 API key。
 
-**Removed model classes:**
+**移除的模型类：**
 
-- **`anthropic` model class**: Removed. Use `litellm` model class for Anthropic models (make sure that cache control is enabled).
+- **`anthropic` 模型类**：已移除。Anthropic 模型请使用 `litellm` 模型类（确保启用缓存控制）。
 
-**Renamed model classes:**
+**重命名的模型类：**
 
-| v1 name | v2 name |
+| v1 名称 | v2 名称 |
 |---------|---------|
 | `litellm_response_api` | `litellm_response` |
 | `portkey_response_api` | `portkey_response` |
 
-**New model classes:**
+**新增的模型类：**
 
-| Name | Description |
+| 名称 | 说明 |
 |------|-------------|
-| `litellm_textbased` | Text-based parsing (regex) instead of tool calls |
-| `openrouter_textbased` | Text-based parsing for OpenRouter |
-| `openrouter_response` | OpenRouter with response API |
+| `litellm_textbased` | 基于文本的解析（正则），替代工具调用 |
+| `openrouter_textbased` | OpenRouter 的基于文本的解析 |
+| `openrouter_response` | 带 response API 的 OpenRouter |
 
-**New environment:**
+**新增的环境：**
 
-- **`swerex_modal`**: Run environments on Modal (requires `pip install mini-swe-agent[modal]`)
+- **`swerex_modal`**：在 Modal 上运行环境（需要 `pip install mini-swe-agent[modal]`）
 
-## Architecture changes
+## 架构变更
 
-1. **Responsibility shift**: Models now parse actions and format observations. This enables switching between tool calls and text parsing by changing model classes. The Agent class is now a simpler coordinator.
+1. **职责转移**：模型现在负责解析动作和格式化观察结果。这样就能通过更换模型类在工具调用与文本解析之间切换。Agent 类现在是一个更简单的协调者。
 
-2. **Stateless models**: Cost tracking moved to Agent. The `cost` and `n_calls` attributes were removed from the Model protocol.
+2. **无状态模型**：成本追踪移到了 Agent。Model 协议中的 `cost` 和 `n_calls` 属性已被移除。
 
-3. **Pydantic configs**: `AgentConfig` (and other configs) changed from `dataclass` to Pydantic `BaseModel`. This requires `pydantic >= 2.0`.
+3. **Pydantic 配置**：`AgentConfig`（以及其他配置）从 `dataclass` 改为 Pydantic 的 `BaseModel`。这要求 `pydantic >= 2.0`。
 
-4. **New protocol methods**: All classes implement `get_template_vars()` and `serialize()` instead of requiring specific attributes.
+4. **新增协议方法**：所有类都实现 `get_template_vars()` 和 `serialize()`，而不再要求具备特定属性。
 
-### Protocol changes
+### 协议变更
 
-If you want to write a custom Model, Environment or Agent compatible with `mini-swe-agent`, you don't need to subclass anything.
-Rather, mini-swe-agent fully uses duck typing with [protocols](https://typing.python.org/en/latest/spec/protocol.html)
-(tl;dr: as long as you implement the required methods, you can use any class as a Model, Environment or Agent).
-Config options like `--config-class` also take full import classes, so you can put your classes wherever you want.
+如果你想编写一个与 `mini-swe-agent` 兼容的自定义 Model、Environment 或 Agent，你不需要继承任何东西。
+相反，mini-swe-agent 完全使用[协议（protocols）](https://typing.python.org/en/latest/spec/protocol.html)的鸭子类型
+（简而言之：只要实现了所需的方法，你就可以把任何类当作 Model、Environment 或 Agent 使用）。
+像 `--config-class` 这样的配置选项也接受完整的导入类，因此你可以把自己的类放在任何地方。
 
-**Model protocol:**
+**Model 协议：**
 
 ```python
-# Removed attributes
-cost: float      # moved to Agent
-n_calls: int     # moved to Agent
+# 移除的属性
+cost: float      # 移到了 Agent
+n_calls: int     # 移到了 Agent
 
-# New methods
+# 新增的方法
 def format_message(self, **kwargs) -> dict: ...
 def format_observation_messages(self, message: dict, outputs: list[dict], template_vars: dict | None = None) -> list[dict]: ...
 def serialize(self) -> dict: ...
 ```
 
-**Environment protocol:**
+**Environment 协议：**
 
 ```python
-# Changed signature
-def execute(self, action: dict, cwd: str = "") -> dict[str, Any]: ...  # was: (command: str) -> dict[str, str]
+# 签名变更
+def execute(self, action: dict, cwd: str = "") -> dict[str, Any]: ...  # 原为：(command: str) -> dict[str, str]
 
-# New method
+# 新增方法
 def serialize(self) -> dict: ...
 ```
 
-**Agent protocol:**
+**Agent 协议：**
 
 ```python
-# Removed attributes (you don't need to implement these anymore, but you can)
+# 移除的属性（你不再需要实现这些，但仍然可以实现）
 model: Model
 env: Environment
 messages: list[dict]
 
-# Changed return type
-def run(self, task: str, **kwargs) -> dict: ...  # was: tuple[str, str]
+# 返回类型变更
+def run(self, task: str, **kwargs) -> dict: ...  # 原为：tuple[str, str]
 
-# New method
+# 新增方法
 def save(self, path: Path | None, *extra_dicts) -> dict: ...
 ```
 
-### Exception changes
+### 异常变更
 
-All flow control exceptions now inherit from `InterruptAgentFlow` and moved to `minisweagent.exceptions`:
+所有流程控制异常现在都继承自 `InterruptAgentFlow`，并移到了 `minisweagent.exceptions`：
 
 ```python
-InterruptAgentFlow (base)
-├── Submitted (task completed)
-├── LimitsExceeded (cost/step limit)
-├── FormatError (invalid model output)
-└── UserInterruption (user cancelled)  # new
+InterruptAgentFlow (基类)
+├── Submitted (任务完成)
+├── LimitsExceeded (成本/步数上限)
+├── FormatError (模型输出无效)
+└── UserInterruption (用户取消)  # 新增
 ```
 
-**Removed exception classes:**
+**移除的异常类：**
 
-- `NonTerminatingException` - use `InterruptAgentFlow` base class
-- `TerminatingException` - use `InterruptAgentFlow` base class
-- `ExecutionTimeoutError` - removed (no longer used)
+- `NonTerminatingException` - 请使用 `InterruptAgentFlow` 基类
+- `TerminatingException` - 请使用 `InterruptAgentFlow` 基类
+- `ExecutionTimeoutError` - 已移除（不再使用）
 
 ```python
-# Old
+# 旧写法
 from minisweagent.agents.default import Submitted, FormatError
 
-# New
+# 新写法
 from minisweagent.exceptions import Submitted, FormatError
 ```
 
-### Agent.run() return value
+### Agent.run() 的返回值
 
 ```python
-# Old (v1)
+# 旧写法（v1）
 submission, exit_status = agent.run(task)  # tuple[str, str]
 
-# New (v2)
+# 新写法（v2）
 result = agent.run(task)  # dict
 submission = result["submission"]
 exit_status = result["exit_status"]
 ```
 
-The `run()` method returns the `extra` dict from the final exit message. For full trajectory data, use `agent.save(path)` or `agent.serialize()`.
+`run()` 方法返回最终退出消息中的 `extra` 字典。要获取完整的轨迹数据，请使用 `agent.save(path)` 或 `agent.serialize()`。

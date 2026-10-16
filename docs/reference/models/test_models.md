@@ -1,10 +1,10 @@
 # Test Models
 
-!!! note "Test Models class"
+!!! note "测试模型类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/test_models.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/test_models.py)
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/models/test_models.py"

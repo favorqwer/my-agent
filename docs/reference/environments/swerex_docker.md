@@ -1,8 +1,8 @@
 # SWE-rex Docker
 
-!!! note "SWE-rex Docker Environment class"
+!!! note "SWE-rex Docker 环境类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/extra/swerex_docker.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/extra/swerex_docker.py)
 
 ::: minisweagent.environments.extra.swerex_docker
 

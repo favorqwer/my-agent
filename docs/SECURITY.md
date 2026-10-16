@@ -1,5 +1,5 @@
-# Security Policy
+# 安全政策
 
-## Reporting a Vulnerability
+## 报告漏洞
 
-Please contact Kilian Lieret (kl5675@princeton.edu), John Yang (johnby@stanford.edu), Carlos E. Jimenez (carlosej@princeton.edu), and Ofir Press (ofirp@princeton.edu).
+请联系 Kilian Lieret（kl5675@princeton.edu）、John Yang（johnby@stanford.edu）、Carlos E. Jimenez（carlosej@princeton.edu）和 Ofir Press（ofirp@princeton.edu）。

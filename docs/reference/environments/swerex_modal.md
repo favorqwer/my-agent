@@ -1,27 +1,27 @@
 # SWE-ReX Modal
 
-!!! note "SWE-ReX Modal Environment class"
+!!! note "SWE-ReX Modal 环境类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/extra/swerex_modal.py)
-    - Requires [Modal](https://modal.com) account and authentication
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/extra/swerex_modal.py)
+    - 需要 [Modal](https://modal.com) 账号并完成认证
 
-This environment executes commands in [Modal](https://modal.com) sandboxes using [SWE-ReX](https://github.com/swe-agent/swe-rex).
+该环境通过 [SWE-ReX](https://github.com/swe-agent/swe-rex) 在 [Modal](https://modal.com) 沙箱中执行命令。
 
-## Setup
+## 设置
 
-1. Install the full dependencies:
+1. 安装完整依赖：
    ```bash
    pip install "mini-swe-agent[full]"
    ```
 
-2. Set up Modal authentication:
+2. 设置 Modal 认证：
    ```bash
    modal setup
    ```
 
-## Usage
+## 用法
 
-Evaluate GPT-5 mini on SWE-bench using Modal:
+使用 Modal 在 SWE-bench 上评测 GPT-5 mini：
 ```
 mini-extra swebench \
     --config src/minisweagent/config/extra/swebench_modal.yaml \

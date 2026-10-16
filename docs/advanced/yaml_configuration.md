@@ -1,48 +1,48 @@
-# Yaml config files
+# Yaml 配置文件
 
-!!! abstract "Agent configuration files"
+!!! abstract "智能体配置文件"
 
-    * You can configure the agent's behavior using YAML configuration files. This guide shows how to do that.
-    * You should already be familiar with the [quickstart guide](../quickstart.md).
-    * For global environment settings (API keys, default model, etc., basically anything that can be set as environment variables), see [global configuration](global_configuration.md).
-    * Want more? See [python bindings](cookbook.md) for subclassing & developing your own agent.
+    * 你可以使用 YAML 配置文件来配置智能体的行为。本指南介绍具体做法。
+    * 你应该已经熟悉[快速入门指南](../quickstart.md)了。
+    * 关于全局环境设置（API key、默认模型等，基本上任何能以环境变量形式设置的内容），请参见[全局配置](global_configuration.md)。
+    * 还想要更多？请参见 [Python 绑定](cookbook.md)，了解如何子类化并开发你自己的智能体。
 
-## Overall structure
+## 整体结构
 
-Configuration files look like this:
+配置文件长这样：
 
-??? note "Configuration file"
+??? note "配置文件"
 
     ```yaml
     --8<-- "src/minisweagent/config/mini.yaml"
     ```
 
-We use the following top-level keys:
+我们使用以下顶层键：
 
-- `agent`: Agent configuration (prompt templates, cost limits etc.)
-- `environment`: Environment configuration (if you want to run in a docker container, etc.)
-- `model`: Model configuration (model name, reasoning strength, etc.)
-- `run`: Run configuration (output file, etc.)
+- `agent`：智能体配置（提示词模板、成本上限等）
+- `environment`：环境配置（例如你想在 docker 容器中运行）
+- `model`：模型配置（模型名称、推理强度等）
+- `run`：运行配置（输出文件等）
 
-## Agent configuration
+## 智能体配置
 
-Different agent classes might have slightly different configuration options.
-You can find the full list of options in the [API reference](../reference/agents/default.md).
+不同的智能体类可能有略微不同的配置选项。
+完整的选项列表可以在 [API 参考](../reference/agents/default.md)中找到。
 
-To use a different agent class, you can set the `agent_class` key to the name of the agent class you want to use
-or even to an import path (to use your own custom agent class even if it is not yet part of the mini-SWE-agent package).
+要使用不同的智能体类，你可以把 `agent_class` 键设为你想用的智能体类名，
+甚至设为一个导入路径（这样即使你自己的自定义智能体类还不属于 mini-SWE-agent 包，也能使用它）。
 
-### Prompt templates
+### 提示词模板
 
-We use [Jinja2](https://jinja.palletsprojects.com/) to render templates (e.g., the instance template).
+我们使用 [Jinja2](https://jinja.palletsprojects.com/) 来渲染模板（例如实例模板）。
 
-TL;DR: You include variables with double (!) curly braces, e.g. `{{task}}` to include the task that was given to the agent.
+简而言之：你用双（！）花括号包含变量，例如 `{{task}}` 用来包含交给智能体的任务。
 
-However, you can also do fairly complicated logic like this directly from your template:
+不过，你也可以直接在模板中实现相当复杂的逻辑，比如：
 
-??? note "Example: Dealing with long observations"
+??? note "示例：处理过长的观察结果"
 
-    The following snippets shortens long observations and displays a warning if the output is too long.
+    下面的代码片段会缩短过长的观察结果，并在输出太长时显示一条警告。
 
     ```jinja
     <returncode>{{output.returncode}}</returncode>
@@ -75,42 +75,42 @@ However, you can also do fairly complicated logic like this directly from your t
     {%- endif -%}
     ```
 
-In all builtin agents, you can use the following variables:
+在所有内置智能体中，你都可以使用以下变量：
 
-- Environment variables (`LocalEnvironment` only, see discussion [here](https://github.com/SWE-agent/mini-swe-agent/pull/425))
-- Agent config variables (i.e., anything that was set in the `agent` section of the config file, e.g., `step_limit`, `cost_limit`, etc.)
-- Environment config variables (i.e., anything that was set in the `environment` section of the config file, e.g., `cwd`, `timeout`, etc.)
-- Variables passed to the `run` method of the agent (by default that's only `task`, but you can pass other variables if you want to)
-- Output of the last action execution (i.e., `output` from the `execute_action` method)
+- 环境变量（仅 `LocalEnvironment` 支持，相关讨论见[这里](https://github.com/SWE-agent/mini-swe-agent/pull/425)）
+- 智能体配置变量（即配置文件中 `agent` 部分设置的所有内容，例如 `step_limit`、`cost_limit` 等）
+- 环境配置变量（即配置文件中 `environment` 部分设置的所有内容，例如 `cwd`、`timeout` 等）
+- 传给智能体 `run` 方法的变量（默认只有 `task`，但如果需要，你也可以传其他变量）
+- 上一次动作执行的输出（即 `execute_action` 方法返回的 `output`）
 
-### Using tool calls
+### 使用工具调用
 
-Make sure to use the appropriate model class and matching configuration.
+请确保使用合适的模型类以及与之匹配的配置。
 
-### Custom Action Parsing from Text
+### 从文本中自定义解析动作
 
-mini-SWE-agent can parse actions from markdown code blocks (` ```mswea_bash_command ... ``` `) or from tool calls.
-You can customize this behavior by setting the `action_regex` field to support different formats like XML.
+mini-SWE-agent 可以从 markdown 代码块（` ```mswea_bash_command ... ``` `）或工具调用中解析动作。
+你可以通过设置 `action_regex` 字段来自定义这一行为，以支持 XML 等不同格式。
 
-!!! warning "Important"
+!!! warning "重要"
 
-    If you set a custom action_regex (e.g. `<action>(.*?)</action>`), you must use the same output format across all prompt templates (system_template, instance_template, format_error_template, etc.), ensuring the LLM wraps commands accordingly. See the example below for a complete configuration.
+    如果你设置了自定义的 action_regex（例如 `<action>(.*?)</action>`），你必须在所有提示词模板（system_template、instance_template、format_error_template 等）中使用相同的输出格式，确保 LLM 相应地包裹命令。完整配置示例见下文。
 
 
-??? example "Using XML format instead of markdown"
+??? example "用 XML 格式替代 markdown"
 
-    This example uses the same structure as the default mini.yaml config, but with `<action>` tags instead of markdown code blocks:
+    本示例使用与默认 mini.yaml 配置相同的结构，只是用 `<action>` 标签代替了 markdown 代码块：
 
     ```yaml
     --8<-- "src/minisweagent/config/benchmarks/swebench_xml.yaml"
     ```
 
-    You can also directly load this config by specifying `--config swebench_xml`.
+    你也可以通过指定 `--config swebench_xml` 直接加载这个配置。
 
 
-??? example "Default markdown format"
+??? example "默认的 markdown 格式"
 
-    This is the default configuration (already the default, you don't need to specify this):
+    这是默认配置（本来就是默认值，你无需显式指定）：
 
 
     ```yaml
@@ -125,22 +125,22 @@ You can customize this behavior by setting the `action_regex` field to support d
         ```
     ```
 
-!!! warning "Linebreaks & escaping"
+!!! warning "换行与转义"
 
-    When specifying `action_regex` from the `yaml` config file, make sure you understand how escaping in yaml files works.
-    For example, when you use the `|` primitive, your regex might have a linbreak at the end which is probably not what you want.
-    The best way is to keep your regex on a single line and NOT use any quotation marks around it. You do NOT need to escape any characters in the regex. Example: `action_regex: <bash_code>(.*?)</bash_code>`
+    在从 `yaml` 配置文件指定 `action_regex` 时，请务必理解 yaml 文件中的转义规则。
+    例如，当你使用 `|` 语法时，你的正则表达式末尾可能会有一个换行符，这很可能不是你想要的。
+    最好的做法是把正则写在一行内，并且不要在它两边加任何引号。你不必对正则中的任何字符进行转义。例如：`action_regex: <bash_code>(.*?)</bash_code>`
 
-## Model configuration
+## 模型配置
 
-See [this guide](../models/quickstart.md) for more details on model configuration.
+模型配置的更多细节请参见[这份指南](../models/quickstart.md)。
 
-## Environment configuration
+## 环境配置
 
-See [this guide](../advanced/environments.md) for more details on environment configuration.
+环境配置的更多细节请参见[这份指南](../advanced/environments.md)。
 
-## Run configuration
+## 运行配置
 
-See the information in "Usage".
+参见“用法”部分中的信息。
 
 {% include-markdown "_footer.md" %}

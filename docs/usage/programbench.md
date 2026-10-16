@@ -1,100 +1,100 @@
 # ProgramBench
 
-!!! abstract "Overview"
+!!! abstract "概览"
 
-    * `mini-extra programbench` runs the agent on all [ProgramBench](https://github.com/facebookresearch/programbench) task instances in batch mode.
-    * Output is directly compatible with `programbench eval`.
-    * ProgramBench is a reverse-engineering benchmark: the agent is dropped into a container
-      with a compiled binary and must produce a fresh source codebase that reproduces the
-      binary's behavior. Solutions are scored by running tests against the rebuilt executable.
+    * `mini-extra programbench` 以批处理模式在所有 [ProgramBench](https://github.com/facebookresearch/programbench) 任务实例上运行智能体。
+    * 输出可直接与 `programbench eval` 兼容。
+    * ProgramBench 是一个逆向工程基准：智能体被放入一个包含已编译二进制的容器中，
+      必须产出一份全新的源代码库，复现该二进制的行为。
+      通过针对重新构建出的可执行文件运行测试来为解法打分。
 
-## Usage
+## 用法
 
-!!! warning "Docker container availability"
+!!! warning "Docker 容器的可用性"
 
-    The ProgramBench docker containers (published as `programbench/<instance>:task_cleanroom`)
-    assume an x86 Linux architecture; you might not be able to run them on other architectures.
-
-
-!!! warning "Install ``programbench`` first"
-
-    The runner imports ``programbench`` to discover task instances. Install it with
-    ``pip install programbench`` (or ``uvx programbench``) before running.
+    ProgramBench 的 docker 容器（发布为 `programbench/<instance>:task_cleanroom`）
+    假定为 x86 Linux 架构；在其他架构上你可能无法运行它们。
 
 
-!!! tip "Quickstart"
+!!! warning "请先安装 ``programbench``"
+
+    该运行器会导入 ``programbench`` 来发现任务实例。运行前请先安装它：
+    ``pip install programbench``（或 ``uvx programbench``）。
+
+
+!!! tip "快速入门"
 
     ```bash
     mini-extra programbench --help
-    # or
+    # 或者
     python src/minisweagent/run/benchmarks/programbench.py --help
-    # Example:
+    # 示例：
     mini-extra programbench \
         --model anthropic/claude-sonnet-4-5-20250929 \
         --workers 4
     ```
 
-    Basic flags:
+    基本参数：
 
-    - `-o`, `--output` - Output directory (default: timestamped `programbench_results_<ts>/`)
-    - `-m`, `--model` - Model to use
-    - `-c`, `--config` - Path to a config file (default: `programbench.yaml` in the `config` directory)
-    - `-w`, `--workers` - Number of worker threads for parallel processing (default: `1`)
+    - `-o`、`--output` - 输出目录（默认：带时间戳的 `programbench_results_<ts>/`）
+    - `-m`、`--model` - 要使用的模型
+    - `-c`、`--config` - 配置文件路径（默认：`config` 目录下的 `programbench.yaml`）
+    - `-w`、`--workers` - 并行处理的工作线程数（默认：`1`）
 
-    Data selection flags:
+    数据选择参数：
 
-    - `--slice` - Slice specification (e.g., `0:5` for first 5 instances)
-    - `--filter` - Filter instance IDs by regex
-    - `--shuffle` - Shuffle instances (default: `False`)
-    - `--redo-existing` - Redo existing instances (default: `False`)
+    - `--slice` - 切片规格（例如 `0:5` 表示前 5 个实例）
+    - `--filter` - 用正则表达式过滤实例 ID
+    - `--shuffle` - 打乱实例顺序（默认：`False`）
+    - `--redo-existing` - 重做已存在的实例（默认：`False`）
 
-    Advanced flags:
+    高级参数：
 
-    - `--environment-class` - Environment type to use (recommended: `docker` or `singularity`)
-    - `--model-class` - Model class to use
+    - `--environment-class` - 要使用的环境类型（推荐：`docker` 或 `singularity`）
+    - `--model-class` - 要使用的模型类
 
-    The docker image tag is hardcoded to ``:task_cleanroom`` (a build-artifact-free image).
+    docker 镜像 tag 硬编码为 ``:task_cleanroom``（一个不含构建产物的镜像）。
 
-!!! tip "Output layout"
+!!! tip "输出结构"
 
-    Each instance writes two files under ``<output>/<instance_id>/``:
+    每个实例会在 ``<output>/<instance_id>/`` 下写入两个文件：
 
-    - ``submission.tar.gz`` - the agent's workspace (gzipped tar of ``/workspace`` inside the container)
-    - ``<instance_id>.traj.json`` - the full agent trajectory
+    - ``submission.tar.gz`` - 智能体的工作区（容器内 ``/workspace`` 的 gzip 压缩 tar 包）
+    - ``<instance_id>.traj.json`` - 完整的智能体轨迹
 
-    The directory can be passed directly to ``programbench eval``:
+    该目录可以直接传给 ``programbench eval``：
 
     ```bash
     programbench eval <output>/
     ```
 
-!!! tip "Network isolation"
+!!! tip "网络隔离"
 
-    The default config launches each container with ``--network none``. The agent therefore
-    cannot install dependencies from the internet, clone GitHub repos, or download source
-    tarballs - the entire reverse-engineering exercise has to happen offline against the
-    provided binary and its bundled documentation. If you need to allow specific hosts, override
-    ``environment.run_args`` in your config.
+    默认配置会以 ``--network none`` 启动每个容器。因此智能体
+    无法从互联网安装依赖、克隆 GitHub 仓库或下载源码
+    tarball —— 整个逆向工程过程都必须离线进行，只能依赖
+    所提供的二进制及其附带的文档。如果你需要允许特定的主机，请在配置中覆盖
+    ``environment.run_args``。
 
-## FAQ
+## 常见问题
 
-See the [SWE-bench FAQ](swebench.md#faq) — most entries (cost limits, KeyboardInterrupt behavior,
-docker troubleshooting, singularity backend) apply equally to ProgramBench.
+参见 [SWE-bench 常见问题](swebench.md#常见问题) —— 其中大部分条目（成本上限、KeyboardInterrupt 行为、
+docker 故障排查、singularity 后端）同样适用于 ProgramBench。
 
-## Implementation
+## 实现
 
-??? note "Default config"
+??? note "默认配置"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/benchmarks/programbench.yaml)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/benchmarks/programbench.yaml)
 
     ```yaml
     --8<-- "src/minisweagent/config/benchmarks/programbench.yaml"
     ```
 
-??? note "`programbench.py` run script"
+??? note "`programbench.py` 运行脚本"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/benchmarks/programbench.py)
-    - [API reference](../reference/run/programbench.md)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/benchmarks/programbench.py)
+    - [API 参考](../reference/run/programbench.md)
 
     ```python
     --8<-- "src/minisweagent/run/benchmarks/programbench.py"

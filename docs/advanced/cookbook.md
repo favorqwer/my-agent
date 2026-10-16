@@ -1,41 +1,40 @@
 # Cookbook
 
-!!! abstract "Remixing & extending mini"
+!!! abstract "混搭与扩展 mini"
 
-    * This guide shows how to mix the different components of the `mini` agent to create your own custom version.
-    * You might want to first take a look at the [control flow of the default agent](control_flow.md) first
+    * 本指南介绍如何混合 `mini` 智能体的各个组件，创建你自己的定制版本。
+    * 你可能想先看看[默认智能体的控制流](control_flow.md)
 
 
-!!! note "Development setup"
+!!! note "开发环境搭建"
 
-    Make sure to follow the dev setup instructions in [quickstart.md](../quickstart.md).
+    请务必按照 [quickstart.md](../quickstart.md) 中的开发环境搭建说明操作。
 
-We provide several different entry points to the agent,
-for example [hello world](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py),
-or the [default when calling `mini`](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py).
+我们提供了几种不同的智能体入口点，
+例如 [hello world](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py)，
+或者[调用 `mini` 时的默认入口](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py)。
 
-Want to cook up your custom version and the config is not enough?
-Just follow the recipe below:
+想让配置已经不足以满足你的定制需求？
+只需按下面的配方操作：
 
-1. What's the control flow you need? Pick an [agent class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents) (e.g., [simplest example](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py), [with human in the loop](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/interactive.py))
-2. How should actions be executed? Pick an [environment class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments) (e.g., [local](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/local.py), or [docker](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/docker.py))
-3. How is the LM queried? Pick a [model class](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models) (e.g., [litellm](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py))
-4. How to invoke the agent? Bind them all together in a [run script](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run), possibly reading from a [config](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/config) (e.g., [hello world](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py), or [`mini` entry point](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py))
+1. 你需要什么样的控制流？选一个[智能体类](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents)（例如[最简示例](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py)、[带人在回路](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/interactive.py)）
+2. 动作应该怎么执行？选一个[环境类](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments)（例如[本地](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/local.py)或[docker](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/docker.py)）
+3. 如何查询语言模型？选一个[模型类](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models)（例如 [litellm](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py)）
+4. 如何调用智能体？把它们一起绑定到一个[运行脚本](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run)中，也可以从[配置](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/config)中读取（例如 [hello world](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py) 或 [`mini` 入口点](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py)）
 
-We aim to keep all of these components very simple, but offer lots of choice between them -- enough to cover a broad range of
-things that you might want to do.
+我们的目标是让所有这些组件都非常简单，但它们之间有大量可选组合——足以覆盖你可能想做的各种事情。
 
-You can override the default entry point by setting the `MSWEA_DEFAULT_RUN` environment variable to the import path of your run script.
+你可以把 `MSWEA_DEFAULT_RUN` 环境变量设为你运行脚本的导入路径，从而覆盖默认入口点。
 
 ## Hello world
 
-See [Python bindings](../usage/python_bindings.md) for the most basic example.
+最基本的示例请参见 [Python 绑定](../usage/python_bindings.md)。
 
-## Mix & match
+## 混搭组合
 
-### Models
+### 模型
 
-=== "Hello world (use automatic model selection)"
+=== "Hello world（使用自动模型选择）"
 
     ```python
     from minisweagent.agents.default import DefaultAgent
@@ -51,7 +50,7 @@ See [Python bindings](../usage/python_bindings.md) for the most basic example.
     agent.run(task)
     ```
 
-=== "Hello world (Litellm)"
+=== "Hello world（Litellm）"
 
     ```python
     from minisweagent.agents.default import DefaultAgent
@@ -67,9 +66,9 @@ See [Python bindings](../usage/python_bindings.md) for the most basic example.
     agent.run(task)
     ```
 
-### Environments
+### 环境
 
-=== "Hello world with local execution"
+=== "使用本地执行的 Hello world"
 
     ```python
     from minisweagent.environments.local import LocalEnvironment
@@ -80,7 +79,7 @@ See [Python bindings](../usage/python_bindings.md) for the most basic example.
     )
     ```
 
-=== "Hello world with docker execution"
+=== "使用 docker 执行的 Hello world"
 
     ```python
     from minisweagent.environments.docker import DockerEnvironment
@@ -91,9 +90,9 @@ See [Python bindings](../usage/python_bindings.md) for the most basic example.
     )
     ```
 
-### Agents
+### 智能体
 
-=== "Default agent"
+=== "默认智能体"
 
     ```python
     from minisweagent.agents.default import DefaultAgent
@@ -106,7 +105,7 @@ See [Python bindings](../usage/python_bindings.md) for the most basic example.
     )
     ```
 
-=== "Human in the loop"
+=== "人在回路"
 
     ```python
     from minisweagent.agents.interactive import InteractiveAgent
@@ -119,14 +118,14 @@ See [Python bindings](../usage/python_bindings.md) for the most basic example.
     )
     ```
 
-## Advanced
+## 进阶
 
-### Customizing execution
+### 自定义执行方式
 
-An agent that uses python function for some actions:
+一个对某些动作使用 python 函数的智能体：
 
 
-=== "Subclassing the agent"
+=== "子类化智能体"
 
     ```python
     from minisweagent.agents.default import DefaultAgent
@@ -145,12 +144,12 @@ An agent that uses python function for some actions:
                     return self.add_messages(self.model.format_observation_messages(
                         message, [python_function(*args)], self.get_template_vars()
                     ))
-            # everything else works as usual
+            # 其余情况一切照旧
             return super().execute_actions(message)
     ```
 
 
-=== "Subclassing the environment"
+=== "子类化环境"
 
     ```python
     from minisweagent.agents.default import DefaultAgent
@@ -167,7 +166,7 @@ An agent that uses python function for some actions:
             if command.startswith("python_function"):
                 args = shlex.split(command.removeprefix("python_function").strip())
                 return python_function(*args)
-            # all other commands are executed as usual
+            # 其他所有命令都照常执行
             return super().execute(action, cwd)
 
     agent = DefaultAgent(
@@ -176,9 +175,9 @@ An agent that uses python function for some actions:
     )
     ```
 
-An agent that exits when the `submit` command is issued:
+一个在发出 `submit` 命令时退出的智能体：
 
-=== "Subclassing the agent"
+=== "子类化智能体"
 
     ```python
     from minisweagent.agents.default import DefaultAgent
@@ -188,8 +187,8 @@ An agent that exits when the `submit` command is issued:
         def execute_actions(self, message: dict) -> list[dict]:
             for action in message.get("extra", {}).get("actions", []):
                 if action.get("command", "") == "submit":
-                    # The `Submitted` exception will be caught by the agent and
-                    # the final output will be printed.
+                    # `Submitted` 异常会被智能体捕获，
+                    # 并打印最终输出。
                     raise Submitted({
                         "role": "exit",
                         "content": "The agent has finished its task.",
@@ -198,7 +197,7 @@ An agent that exits when the `submit` command is issued:
             return super().execute_actions(message)
     ```
 
-=== "Subclassing the environment"
+=== "子类化环境"
 
     ```python
     from minisweagent.agents.default import DefaultAgent
@@ -222,9 +221,9 @@ An agent that exits when the `submit` command is issued:
     ```
 
 
-An agent that validates actions before execution (also an example of how to use an extended config class):
+一个在执行前校验动作的智能体（同时也是如何使用扩展配置类的示例）：
 
-=== "Subclassing the agent"
+=== "子类化智能体"
 
     ```python
     import re
@@ -254,7 +253,7 @@ An agent that validates actions before execution (also an example of how to use 
             return super().execute_actions(message)
     ```
 
-=== "Subclassing the environment"
+=== "子类化环境"
 
     ```python
     import re
@@ -286,9 +285,9 @@ An agent that validates actions before execution (also an example of how to use 
     )
     ```
 
-### Running mini-swe-agent on Ray
+### 在 Ray 上运行 mini-swe-agent
 
-[This blog post](https://www.anyscale.com/blog/massively-parallel-agentic-simulations-with-ray)
-describes how to parallelize mini-swe-agent runs with Ray.
+[这篇博客文章](https://www.anyscale.com/blog/massively-parallel-agentic-simulations-with-ray)
+介绍了如何用 Ray 并行运行 mini-swe-agent。
 
 {% include-markdown "_footer.md" %}

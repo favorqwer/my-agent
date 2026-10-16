@@ -1,7 +1,7 @@
 <div align="center">
 <img src="assets/mini-swe-agent-banner.svg" alt="mini-swe-agent banner" style="height: 7em"/>
 
-<h1 style="margin-bottom: 1ex;">The 100 line AI agent that's actually useful</h1>
+<h1 style="margin-bottom: 1ex;">只有 100 行代码、却真正实用的 AI 智能体</h1>
 
 </div>
 
@@ -19,83 +19,83 @@
 
 </div>
 
-!!! warning "This is mini-swe-agent v2"
+!!! warning "这是 mini-swe-agent v2"
 
-    Read the [migration guide](https://mini-swe-agent.com/latest/advanced/v2_migration/). For the previous version, check out the [v1 documentation](https://mini-swe-agent.com/v1/) or the [v1 branch](https://github.com/SWE-agent/mini-swe-agent/tree/v1).
+    请阅读[迁移指南](https://mini-swe-agent.com/latest/advanced/v2_migration/)。如需上一版本，请查看 [v1 文档](https://mini-swe-agent.com/v1/)或 [v1 分支](https://github.com/SWE-agent/mini-swe-agent/tree/v1)。
 
-In 2024, [SWE-bench](https://swebench.com) & [SWE-agent](https://swe-agent.com) helped kickstart the coding agent revolution.
+2024 年，[SWE-bench](https://swebench.com) 和 [SWE-agent](https://swe-agent.com) 助力掀起了编码智能体的革命。
 
-We now ask: **What if our agent was 100x simpler, and still worked nearly as well?**
+现在我们要问：**如果我们的智能体简单 100 倍，但效果几乎一样好，会怎样？**
 
-`mini` is
+`mini` 具有如下特点：
 
-- **Widely adopted**: Used by Meta, NVIDIA, Essential AI, IBM, Nebius, Anyscale, Princeton University, Stanford University, and many more.
-- **Minimal**: Just [100 lines of python](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py) (+100 total for [env](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/local.py),
-[model](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py), [script](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py)) — no fancy dependencies!
-- **Performant:** Scores >74% on the [SWE-bench verified benchmark](https://www.swebench.com/); starts much faster than Claude Code
-- **Deployable:** Supports **local environments**, **docker/podman**, **singularity/apptainer**, **bublewrap**, **contree**, and more
-- **Compatible:** Supports all models via **litellm**, **openrouter**, **portkey**, and more. Support for `/completion` and `/response` endpoints, interleaved thinking etc.
-- Built by the Princeton & Stanford team behind [SWE-bench](https://swebench.com), [SWE-agent](https://swe-agent.com), and more
-- **Tested:** [![Codecov](https://img.shields.io/codecov/c/github/swe-agent/mini-swe-agent?style=flat-square)](https://codecov.io/gh/SWE-agent/mini-swe-agent)
+- **被广泛采用**：Meta、NVIDIA、Essential AI、IBM、Nebius、Anyscale、普林斯顿大学、斯坦福大学等众多机构都在使用。
+- **极简**：[只有 100 行 Python](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py)（[环境](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/environments/local.py)、
+[模型](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py)、[脚本](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py)合计再加 100 行）——没有任何花哨的依赖！
+- **性能出众**：在 [SWE-bench verified 基准](https://www.swebench.com/)上得分超过 74%；启动速度远快于 Claude Code
+- **易于部署**：支持**本地环境**、**docker/podman**、**singularity/apptainer**、**bubblewrap**、**contree** 等
+- **兼容性强**：通过 **litellm**、**openrouter**、**portkey** 等支持所有模型。支持 `/completion` 和 `/response` 端点、交错思考（interleaved thinking）等
+- 由打造 [SWE-bench](https://swebench.com)、[SWE-agent](https://swe-agent.com) 等项目的普林斯顿与斯坦福团队构建
+- **经过测试**：[![Codecov](https://img.shields.io/codecov/c/github/swe-agent/mini-swe-agent?style=flat-square)](https://codecov.io/gh/SWE-agent/mini-swe-agent)
 
-??? note "Why use mini-SWE-agent for research?"
+??? note "为什么用 mini-SWE-agent 做研究？"
 
-    [SWE-agent](https://swe-agent.com/latest/) jump-started the development of AI agents in 2024. Back then, we placed a lot of emphasis on tools and special interfaces for the agent. However, one year later, a lot of this is not needed at all to build a useful agent!
+    [SWE-agent](https://swe-agent.com/latest/) 在 2024 年开启了 AI 智能体的发展之路。当时，我们非常强调为智能体提供工具和特殊接口。然而一年之后，构建一个有用的智能体已经完全不需要这些了！
 
-    In fact, the `mini` agent:
+    事实上，`mini` 智能体：
 
-    - **Does not have any tools other than bash** — it doesn't even use the tool-calling interface of the LMs.
-      This means that you can run it with literally any model.
-      When running in sandboxed environments you also don't need to take care of installing a single package — all it needs is bash.
-    - **Has a completely linear history** — every step of the agent just appends to the messages and that's it.
-      So there's no difference between the trajectory and the messages that you pass on to the LM.
-      Great for debugging & fine-tuning.
-    - **Executes actions with `subprocess.run`** — every action is completely independent (as opposed to keeping a stateful shell session running). This makes it trivial to execute the actions in sandboxes (literally just switch out `subprocess.run` with `docker exec`) and to scale up effortlessly.
-      Seriously, this is [a big deal](faq.md#why-no-shell-session), trust me.
+    - **除 bash 之外没有任何工具** —— 它甚至不使用语言模型的工具调用接口。
+      这意味着你可以用任何模型运行它。
+      在沙箱环境中运行时，你也不需要操心安装任何包——它只需要 bash。
+    - **拥有完全线性的历史记录** —— 智能体的每一步只是向消息列表追加内容，仅此而已。
+      因此，轨迹（trajectory）与传给语言模型的消息之间没有任何差别。
+      非常适合调试和微调。
+    - **使用 `subprocess.run` 执行动作** —— 每个动作完全独立（而不是保持一个有状态的 shell 会话运行）。这使得在沙箱中执行动作变得非常简单（实际上只需把 `subprocess.run` 换成 `docker exec`），并且可以轻松扩展。
+      说真的，这[非常重要](faq.md#why-no-shell-session)，相信我。
 
-    This makes it perfect as a baseline system and for a system that puts the language model (rather than the agent scaffold) in the middle of our attention.
-    You can see the result on the [SWE-bench (bash only)](https://www.swebench.com/) leaderboard, that evaluates the performance of different LMs with `mini`.
+    这使它非常适合作为基线系统，也适合作为一个把语言模型（而非智能体脚手架）置于关注中心的系统。
+    你可以在 [SWE-bench (bash only)](https://www.swebench.com/) 排行榜上看到结果，该榜单评估了不同语言模型在 `mini` 上的表现。
 
-??? note "Why use mini-SWE-agent as a tool?"
+??? note "为什么把 mini-SWE-agent 当作工具使用？"
 
-    Some agents are overfitted research artifacts. Others are UI-heavy frontend monsters.
+    有些智能体是过拟合的研究产物，另一些则是重度依赖 UI 的前端巨兽。
 
-    The `mini` agent wants to be a hackable tool, not a black box.
+    `mini` 智能体想成为一个可供随意改造的工具，而不是一个黑盒。
 
-    - **Simple** enough to understand at a glance
-    - **Convenient** enough to use in daily workflows
-    - **Flexible** to extend
+    - **足够简单**，一眼就能看懂
+    - **足够方便**，可以在日常工作流中使用
+    - **足够灵活**，便于扩展
 
-    Unlike other agents (including our own [swe-agent](https://swe-agent.com/latest/)), it is radically simpler, because it:
+    与其他智能体（包括我们自己的 [swe-agent](https://swe-agent.com/latest/)）不同，它要激进地简单得多，因为它：
 
-    - **Does not have any tools other than bash** — it doesn't even use the tool-calling interface of the LMs.
-      Instead of implementing custom tools for every specific thing the agent might want to do, the focus is fully on the LM utilizing the shell to its full potential.
-      Want it to do something specific like opening a PR?
-      Just tell the LM to figure it out rather than spending time to implement it in the agent.
-    - **Executes actions with `subprocess.run`** — every action is completely independent (as opposed to keeping a stateful shell session running).
-      This is [a big deal](https://mini-swe-agent.com/latest/faq/#why-no-shell-session) for the stability of the agent, trust me.
-    - **Has a completely linear history** — every step of the agent just appends to the messages that are passed to the LM in the next step and that's it.
-      This is great for debugging and understanding what the LM is prompted with.
+    - **除 bash 之外没有任何工具** —— 它甚至不使用语言模型的工具调用接口。
+      我们不为智能体可能想做的每一件具体事情实现自定义工具，而是完全专注于让语言模型充分发挥 shell 的全部潜力。
+      想让它做某件具体的事，比如开一个 PR？
+      直接告诉语言模型自己去搞定，而不是花时间在智能体里实现它。
+    - **使用 `subprocess.run` 执行动作** —— 每个动作完全独立（而不是保持一个有状态的 shell 会话运行）。
+      这对智能体的稳定性[非常重要](https://mini-swe-agent.com/latest/faq/#why-no-shell-session)，相信我。
+    - **拥有完全线性的历史记录** —— 智能体的每一步只是向下一步传给语言模型的消息中追加内容，仅此而已。
+      这对于调试和理解语言模型收到的提示非常有帮助。
 
-??? note "Should I use mini-SWE-agent or swe-agent?"
+??? note "我应该用 mini-SWE-agent 还是 swe-agent？"
 
-    You should consider `mini-swe-agent` your default choice.
-    In particular, you should use `mini-swe-agent` if
+    你应该把 `mini-swe-agent` 当作默认选择。
+    尤其是当你符合以下情况时，应该使用 `mini-swe-agent`：
 
-    - You want a quick command line tool that works locally
-    - You want an agent with a very simple control flow
-    - You want even faster, simpler & more stable sandboxing & benchmark evaluations
-    - You are doing FT or RL and don't want to overfit to a specific agent scaffold
+    - 你想要一个能在本地使用的快速命令行工具
+    - 你想要一个控制流非常简单的智能体
+    - 你想要更快、更简单、更稳定的沙箱与基准评测
+    - 你在做微调（FT）或强化学习（RL），不想过拟合到某个特定的智能体脚手架
 
-    You should use `swe-agent` if
+    而以下情况你应该使用 `swe-agent`：
 
-    - You want to experiment with different sets of tools, each with their own interface
-    - You want to experiment with different history processors
+    - 你想试验不同的工具集合，且每种工具都有自己的接口
+    - 你想试验不同的历史记录处理器（history processor）
 
-    What you get with both
+    两者都能带给你：
 
-    - Excellent performance on SWE-Bench
-    - A trajectory browser
+    - 在 SWE-Bench 上的出色性能
+    - 一个轨迹浏览器
 
 <table>
 <tr>
@@ -103,7 +103,7 @@ We now ask: **What if our agent was 100x simpler, and still worked nearly as wel
 <a href="usage/mini"><strong>CLI</strong></a> (<code>mini</code>)
 </td>
 <td>
-<a href="usage/swebench/"><strong>Batch inference</strong></a>
+<a href="usage/swebench/"><strong>批量推理</strong></a>
 </td>
 </tr>
 <tr>
@@ -124,10 +124,10 @@ We now ask: **What if our agent was 100x simpler, and still worked nearly as wel
 </tr>
 <tr>
 <td>
-<a href="usage/inspector/"><strong>Trajectory browser</strong></a>
+<a href="usage/inspector/"><strong>轨迹浏览器</strong></a>
 </td>
 <td>
-<a href="advanced/cookbook/"><strong>Python bindings</strong></a>
+<a href="advanced/cookbook/"><strong>Python 绑定</strong></a>
 </td>
 </tr>
 <tr>
@@ -149,20 +149,20 @@ agent.run("Write a sudoku game")</code></pre>
 </table>
 
 
-!!! info "Upgrading to v2?"
+!!! info "要升级到 v2 吗？"
 
-    Check out our [v2 migration guide](advanced/v2_migration.md) for all the changes and how to update your code.
+    请查看我们的 [v2 迁移指南](advanced/v2_migration.md)，了解所有变更以及如何更新你的代码。
 
-## Continue reading:
+## 继续阅读：
 
 <div class="grid cards">
   <a href="quickstart/" class="nav-card-link">
     <div class="nav-card">
       <div class="nav-card-header">
         <span class="material-icons nav-card-icon">launch</span>
-        <span class="nav-card-title">Installation & Quick Start</span>
+        <span class="nav-card-title">安装与快速入门</span>
       </div>
-      <p class="nav-card-description">Get started with mini-SWE-agent</p>
+      <p class="nav-card-description">开始使用 mini-SWE-agent</p>
     </div>
   </a>
 
@@ -170,9 +170,9 @@ agent.run("Write a sudoku game")</code></pre>
     <div class="nav-card">
       <div class="nav-card-header">
         <span class="material-icons nav-card-icon">flash_on</span>
-        <span class="nav-card-title">Usage: Simple UI</span>
+        <span class="nav-card-title">用法：简洁界面</span>
       </div>
-      <p class="nav-card-description">Learn to use the <code>mini</code> command</p>
+      <p class="nav-card-description">学习使用 <code>mini</code> 命令</p>
     </div>
   </a>
 
@@ -180,9 +180,9 @@ agent.run("Write a sudoku game")</code></pre>
     <div class="nav-card">
       <div class="nav-card-header">
         <span class="material-icons nav-card-icon">help</span>
-        <span class="nav-card-title">FAQ</span>
+        <span class="nav-card-title">常见问题</span>
       </div>
-      <p class="nav-card-description">Common questions and answers</p>
+      <p class="nav-card-description">常见疑问与解答</p>
     </div>
   </a>
 
@@ -190,9 +190,9 @@ agent.run("Write a sudoku game")</code></pre>
     <div class="nav-card">
       <div class="nav-card-header">
         <span class="material-icons nav-card-icon">settings</span>
-        <span class="nav-card-title">Configuration</span>
+        <span class="nav-card-title">配置</span>
       </div>
-      <p class="nav-card-description">Setup and customize your agent</p>
+      <p class="nav-card-description">搭建并定制你的智能体</p>
     </div>
   </a>
 
@@ -200,28 +200,28 @@ agent.run("Write a sudoku game")</code></pre>
     <div class="nav-card">
       <div class="nav-card-header">
         <span class="material-icons nav-card-icon">fitness_center</span>
-        <span class="nav-card-title">Power up</span>
+        <span class="nav-card-title">进阶增强</span>
       </div>
-      <p class="nav-card-description">Start hacking the agent!</p>
+      <p class="nav-card-description">开始改造这个智能体吧！</p>
     </div>
   </a>
 </div>
 
-## 📣 News
+## 📣 新闻
 
-* [mini-swe-agent now powers Ramp SWE-Bench](https://labs.ramp.com/swebench)
-* [mini-swe-agent beats Claude Code and Codex on DeepSWE](https://deepswe.datacurve.ai/blog#evaluation-harness)
-* [Run mini-swe-agent on our new & extremely challenging benchmark, ProgramBench](usage/programbench.md)
-* [New tutorial on building minimal AI agents](https://minimal-agent.com/)
-* Nov 19: [Gemini 3 Pro reaches 74% on SWE-bench verified with mini-swe-agent!](https://x.com/KLieret/status/1991164693839270372)
-* Aug 19: [New blogpost: Randomly switching between GPT-5 and Sonnet 4 boosts performance](https://www.swebench.com/post-250820-mini-roulette.html)
+* [mini-swe-agent 现已驱动 Ramp SWE-Bench](https://labs.ramp.com/swebench)
+* [mini-swe-agent 在 DeepSWE 上击败了 Claude Code 和 Codex](https://deepswe.datacurve.ai/blog#evaluation-harness)
+* [在我们的全新且极具挑战性的基准 ProgramBench 上运行 mini-swe-agent](usage/programbench.md)
+* [关于构建极简 AI 智能体的新教程](https://minimal-agent.com/)
+* 11 月 19 日：[Gemini 3 Pro 借助 mini-swe-agent 在 SWE-bench verified 上达到 74%！](https://x.com/KLieret/status/1991164693839270372)
+* 8 月 19 日：[新博客文章：在 GPT-5 和 Sonnet 4 之间随机切换可以提升性能](https://www.swebench.com/post-250820-mini-roulette.html)
 
-## 📣 New features
+## 📣 新特性
 
-Please check the [github release notes](https://github.com/SWE-agent/mini-swe-agent/releases) for the latest updates.
+最新更新请查看 [GitHub 发行说明](https://github.com/SWE-agent/mini-swe-agent/releases)。
 
-## 📣 Documentation updates
+## 📣 文档更新
 
-* Jul 27: More notes on [local models](models/local_models.md)
+* 7 月 27 日：关于[本地模型](models/local_models.md)的更多说明
 
 {% include-markdown "_footer.md" %}

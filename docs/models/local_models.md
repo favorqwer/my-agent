@@ -1,31 +1,31 @@
-!!! abstract "Local models"
+!!! abstract "本地模型"
 
-    * This guide shows how to set up local models.
-    * You should already be familiar with the [quickstart guide](../quickstart.md).
-    * You should also quickly skim the [global configuration guide](../advanced/global_configuration.md) to understand
-      the global configuration and [yaml configuration files guide](../advanced/yaml_configuration.md).
+    * 本指南介绍如何设置本地模型。
+    * 你应该已经熟悉[快速入门指南](../quickstart.md)了。
+    * 你还应该快速浏览一下[全局配置指南](../advanced/global_configuration.md)，以理解
+      全局配置，以及 [Yaml 配置文件指南](../advanced/yaml_configuration.md)。
 
 
-!!! tip "Examples"
+!!! tip "示例"
 
-    * [Issue #303](https://github.com/SWE-agent/mini-swe-agent/issues/303) has several examples of how to use local models.
-    * We also welcome concrete examples of how to use local models per pull request into this guide.
+    * [议题 #303](https://github.com/SWE-agent/mini-swe-agent/issues/303) 中有若干使用本地模型的示例。
+    * 我们也欢迎通过 pull request 向本指南补充具体的使用示例。
 
-## Using litellm
+## 使用 litellm
 
-Currently, models are supported via [`litellm`](https://www.litellm.ai/) by default.
+目前，模型默认通过 [`litellm`](https://www.litellm.ai/) 支持。
 
-There are typically two steps to using local models:
+使用本地模型通常分两步：
 
-1. Editing the agent config file to add settings like `custom_llm_provider` and `api_base`.
-2. Either ignoring errors from cost tracking or updating the model registry to include your local model.
+1. 编辑智能体配置文件，加入 `custom_llm_provider`、`api_base` 之类的设置。
+2. 要么忽略成本追踪产生的错误，要么更新模型注册表以包含你的本地模型。
 
-### Setting API base/provider
+### 设置 API base／提供商
 
-If you use local models, you most likely need to add some extra keywords to the `litellm` call.
-This is done with the `model_kwargs` dictionary which is directly passed to `litellm.completion`.
+如果你使用本地模型，很可能需要给 `litellm` 调用添加一些额外的关键字参数。
+这通过 `model_kwargs` 字典完成，它会直接传给 `litellm.completion`。
 
-In other words, this is how we invoke litellm:
+换句话说，我们是这样调用 litellm 的：
 
 ```python
 litellm.completion(
@@ -35,15 +35,15 @@ litellm.completion(
 )
 ```
 
-You can set `model_kwargs` in an agent config file like the following one:
+你可以像下面这样在智能体配置文件中设置 `model_kwargs`：
 
-??? note "Default configuration file"
+??? note "默认配置文件"
 
     ```yaml
     --8<-- "src/minisweagent/config/mini.yaml"
     ```
 
-In the last section, you can add
+在最后一节中，你可以添加：
 
 ```yaml
 model:
@@ -55,34 +55,34 @@ model:
   ...
 ```
 
-!!! tip "Updating the default `mini` configuration file"
+!!! tip "更新默认的 `mini` 配置文件"
 
-    You can set the `MSWEA_MINI_CONFIG_PATH` setting to set path to the default `mini` configuration file.
-    This will allow you to override the default configuration file with your own.
-    See the [global configuration guide](../advanced/global_configuration.md) for more details.
+    你可以设置 `MSWEA_MINI_CONFIG_PATH` 来指定默认 `mini` 配置文件的路径。
+    这样你就能用自己的配置覆盖默认配置文件。
+    更多细节请参见[全局配置指南](../advanced/global_configuration.md)。
 
-If this is not enough, our model class should be simple to modify:
+如果这还不够，我们的模型类应该很容易修改：
 
-??? note "Complete model class"
+??? note "完整的模型类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py)
-    - [API reference](../reference/models/litellm.md)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py)
+    - [API 参考](../reference/models/litellm.md)
 
     ```python
     --8<-- "src/minisweagent/models/litellm_model.py"
     ```
 
-The other part that you most likely need to figure out are costs.
-There are two ways to do this with `litellm`:
+另一件你很可能需要搞清楚的事情是成本。
+用 `litellm` 有两种处理方式：
 
-1. You set up a litellm proxy server (which gives you a lot of control over all the LM calls)
-2. You update the model registry (next section)
+1. 搭建一个 litellm 代理服务器（它能让你对所有语言模型调用拥有很强的控制力）
+2. 更新模型注册表（见下一节）
 
-### Cost tracking
+### 成本追踪
 
-If you run with the above, you will most likely get an error about missing cost information.
+如果按上面的方式运行，你很可能会遇到缺少成本信息的错误。
 
-If you do not need cost tracking, you can ignore these errors, ideally by editing your agent config file to add:
+如果你不需要成本追踪，可以忽略这些错误，最好是在智能体配置文件中加入：
 
 ```yaml
 model:
@@ -91,19 +91,19 @@ model:
 ...
 ```
 
-Alternatively, you can set the global setting:
+或者，你可以设置全局配置：
 
 ```bash
 export MSWEA_COST_TRACKING="ignore_errors"
 ```
 
-However, note that this is a global setting, and will affect all models!
+不过要注意，这是一个全局设置，会影响所有模型！
 
-However, the best way to handle the cost issue is to add a model registry to litellm to include your local model.
+然而，处理成本问题的最佳方式是给 litellm 添加一个模型注册表，把你的本地模型包含进去。
 
-LiteLLM gets its cost and model metadata from [this file](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json). You can override or add data from this file if it's outdated or missing your desired model by including a custom registry file.
+LiteLLM 的模型成本与元数据来自[这个文件](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)。如果该文件过时或缺少你想要的模型，你可以通过提供一个自定义注册表文件来覆盖或补充其中的数据。
 
-The model registry JSON file should follow LiteLLM's format:
+模型注册表 JSON 文件应遵循 LiteLLM 的格式：
 
 ```json
 {
@@ -124,19 +124,19 @@ The model registry JSON file should follow LiteLLM's format:
 }
 ```
 
-!!! warning "Model names"
+!!! warning "模型名称"
 
-    Model names are case sensitive. Please make sure you have an exact match.
+    模型名称区分大小写。请确保完全匹配。
 
-!!! warning "Model provider"
+!!! warning "模型提供商"
 
-    If you use the `custom_llm_provider` or have a provider prefixed to the model name (e.g., `openai/...`),
-    then this must also match `litellm_provider` in the config!
+    如果你使用了 `custom_llm_provider`，或者在模型名前面加了提供商前缀（例如 `openai/...`），
+    那么它必须与配置中的 `litellm_provider` 一致！
 
-There are two ways of setting the path to the model registry:
+设置模型注册表路径有两种方式：
 
-1. Set `LITELLM_MODEL_REGISTRY_PATH` (e.g., `mini-extra config set LITELLM_MODEL_REGISTRY_PATH /path/to/model_registry.json`)
-2. Set `litellm_model_registry` in the agent config file
+1. 设置 `LITELLM_MODEL_REGISTRY_PATH`（例如 `mini-extra config set LITELLM_MODEL_REGISTRY_PATH /path/to/model_registry.json`）
+2. 在智能体配置文件中设置 `litellm_model_registry`
 
 ```yaml
 model:
@@ -145,30 +145,30 @@ model:
 ...
 ```
 
-## Concrete examples
+## 具体示例
 
-### Generating SWE-bench trajectories with vLLM
+### 用 vLLM 生成 SWE-bench 轨迹
 
-This example shows how to generate SWE-bench trajectories using [vLLM](https://docs.vllm.ai/en/latest/) as the local inference engine.
+本示例展示如何使用 [vLLM](https://docs.vllm.ai/en/latest/) 作为本地推理引擎来生成 SWE-bench 轨迹。
 
-First, launch a vLLM server with your chosen model. For example:
+首先，用你选定的模型启动一个 vLLM 服务器。例如：
 
 ```bash
 vllm serve ricdomolm/mini-coder-1.7b &
 ```
 
-By default, the server will be available at `http://localhost:8000`.
+默认情况下，服务器会在 `http://localhost:8000` 上可用。
 
-Second, edit the mini-swe-agent SWE-bench config file located in `src/minisweagent/config/benchmarks/swebench.yaml` to include your local vLLM model:
+其次，编辑位于 `src/minisweagent/config/benchmarks/swebench.yaml` 的 mini-swe-agent SWE-bench 配置文件，加入你的本地 vLLM 模型：
 
 ```yaml
 model:
-  model_name: "hosted_vllm/ricdomolm/mini-coder-1.7b"  # or hosted_vllm/path/to/local/model
+  model_name: "hosted_vllm/ricdomolm/mini-coder-1.7b"  # 或 hosted_vllm/path/to/local/model
   model_kwargs:
-    api_base: "http://localhost:8000/v1"  # adjust if using a non-default port/address
+    api_base: "http://localhost:8000/v1"  # 如果使用非默认端口/地址，请相应调整
 ```
 
-If you need a custom registry, as detailed above, create a `registry.json` file:
+如果你需要上面的自定义注册表，请创建一个 `registry.json` 文件：
 
 ```bash
 cat > registry.json <<'EOF'
@@ -184,13 +184,13 @@ cat > registry.json <<'EOF'
 EOF
 ```
 
-Now you’re ready to generate trajectories! Let's solve the `django__django-11099` instance of SWE-bench Verified:
+现在你就可以生成轨迹了！让我们来解 SWE-bench Verified 中的 `django__django-11099` 实例：
 
 ```bash
 LITELLM_MODEL_REGISTRY_PATH=registry.json mini-extra swebench \
     --output test/ --subset verified --split test --filter '^(django__django-11099)$'
 ```
 
-You should now see the generated trajectory in the `test/` directory.
+现在你应该能在 `test/` 目录中看到生成的轨迹了。
 
 --8<-- "docs/_footer.md"

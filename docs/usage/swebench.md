@@ -1,11 +1,11 @@
 # SWE-bench
 
-!!! abstract "Overview"
+!!! abstract "概览"
 
-    * We provide two scripts to run on the [SWE-bench](https://www.swebench.com/) benchmark.
-    * `mini-extra swebench` runs on all task instances in batch mode.
-    * `mini-extra swebench-single` runs on a single task instance with interactivity (useful for debugging).
-    * You can also take a look at the runscripts to figure out how to build your own batch processing pipeline.
+    * 我们提供了两个脚本来运行 [SWE-bench](https://www.swebench.com/) 基准。
+    * `mini-extra swebench` 以批处理模式运行所有任务实例。
+    * `mini-extra swebench-single` 以交互方式运行单个任务实例（便于调试）。
+    * 你也可以查看这些运行脚本，了解如何构建自己的批处理流水线。
 
 <figure markdown="span">
   <div class="gif-container gif-container-styled" data-glightbox-disabled>
@@ -15,27 +15,27 @@
   </div>
 </figure>
 
-## Usage
+## 用法
 
-!!! warning "Docker container availability"
+!!! warning "Docker 容器的可用性"
 
-    The docker containers for Linux assume an x86 Linux architecture;
-    you might not be able to run them on other architectures.
+    用于 Linux 的 docker 容器假定为 x86 Linux 架构；
+    在其他架构上你可能无法运行它们。
 
 
-!!! tip "Quickstart"
+!!! tip "快速入门"
 
-    We provide two different scripts: `swebench` and `swebench-single`:
+    我们提供两个不同的脚本：`swebench` 和 `swebench-single`：
 
-    === "Batch mode"
+    === "批处理模式"
 
-        Batch mode runs on all task instances in parallel.
+        批处理模式会并行运行所有任务实例。
 
         ```bash
         mini-extra swebench --help
-        # or
+        # 或者
         python src/minisweagent/run/benchmarks/swebench.py --help
-        # Example:
+        # 示例：
         mini-extra swebench \
             --model anthropic/claude-sonnet-4-5-20250929 \
             --subset verified \
@@ -43,88 +43,88 @@
             --workers 4
         ```
 
-        Basic flags:
+        基本参数：
 
-        - `-o`, `--output` - Output directory
-        - `-m`, `--model` - Model to use
-        - `-c`, `--config` - Path to a config file (default: `swebench.yaml` in the `config` directory)
-        - `-w`, `--workers` - Number of worker threads for parallel processing (default: `1`)
+        - `-o`、`--output` - 输出目录
+        - `-m`、`--model` - 要使用的模型
+        - `-c`、`--config` - 配置文件路径（默认：`config` 目录下的 `swebench.yaml`）
+        - `-w`、`--workers` - 并行处理的工作线程数（默认：`1`）
 
-        Data selection flags:
+        数据选择参数：
 
-        - `--subset` - SWEBench subset to use or path to a dataset (default: `lite`)
-        - `--split` - Dataset split (default: `dev`)
-        - `--slice` - Slice specification (e.g., '0:5' for first 5 instances)
-        - `--filter` - Filter instance IDs by regex
-        - `--shuffle` - Shuffle instances (default: `False`)
-        - `--redo-existing` - Redo existing instances (default: `False`)
+        - `--subset` - 要使用的 SWEBench 子集或数据集路径（默认：`lite`）
+        - `--split` - 数据集划分（默认：`dev`）
+        - `--slice` - 切片规格（例如 '0:5' 表示前 5 个实例）
+        - `--filter` - 用正则表达式过滤实例 ID
+        - `--shuffle` - 打乱实例顺序（默认：`False`）
+        - `--redo-existing` - 重做已存在的实例（默认：`False`）
 
-        Advanced flags:
+        高级参数：
 
-        - `--environment-class` - Environment type to use (recommended: `docker` or `singularity`)
+        - `--environment-class` - 要使用的环境类型（推荐：`docker` 或 `singularity`）
 
-    === "Single instance (for debugging)"
+    === "单个实例（用于调试）"
 
-        Single instance mode runs on a single task instance with interactivity. This is meant for debugging, and so unlike the batch mode command above, this will not produce a preds.json file.
+        单实例模式以交互方式运行单个任务实例。它用于调试，因此与上面的批处理模式命令不同，它不会生成 preds.json 文件。
 
         ```bash
         mini-extra swebench-single --help
-        # or
+        # 或者
         python src/minisweagent/run/benchmarks/swebench_single.py --help
-        # Example:
+        # 示例：
         mini-extra swebench-single \
             --subset verified \
             --split test \
             --model anthropic/claude-sonnet-4-5-20250929 \
             -i sympy__sympy-15599
-        # or
+        # 或者
         mini-extra swebench-single \
             --subset verified \
             --split test \
             -m anthropic/claude-sonnet-4-5-20250929 \
-            -i 0  # instance index
+            -i 0  # 实例索引
         ```
 
-        Note: If you want to run the script without prompting for confirmation at exit,
-        add the `--exit-immediately` flag.
+        注意：如果你希望在退出时不弹出确认提示，直接运行脚本，
+        请加上 `--exit-immediately` 参数。
 
-        Basic flags:
+        基本参数：
 
-        - `-m`, `--model` - Model to use
-        - `-c`, `--config` - Path to a config file (default: `swebench.yaml` in the `config` directory)
-        - `-o`, `--output` - Output trajectory file (default: saves to global config directory)
+        - `-m`、`--model` - 要使用的模型
+        - `-c`、`--config` - 配置文件路径（默认：`config` 目录下的 `swebench.yaml`）
+        - `-o`、`--output` - 输出轨迹文件（默认：保存到全局配置目录）
 
-        Data selection flags:
+        数据选择参数：
 
-        - `--subset` - SWEBench subset to use or path to a dataset (default: `lite`)
-        - `--split` - Dataset split (default: `dev`)
-        - `-i`, `--instance` - SWE-Bench instance ID (default: `0`)
+        - `--subset` - 要使用的 SWEBench 子集或数据集路径（默认：`lite`）
+        - `--split` - 数据集划分（默认：`dev`）
+        - `-i`、`--instance` - SWE-Bench 实例 ID（默认：`0`）
 
-        Advanced flags:
+        高级参数：
 
-        - `--environment-class` - Environment type to use (recommended: `docker` or `singularity`)
-        - `--exit-immediately` - Exit immediately when the agent wants to finish instead of prompting (default: `False`)
+        - `--environment-class` - 要使用的环境类型（推荐：`docker` 或 `singularity`）
+        - `--exit-immediately` - 当智能体想要结束时立即退出，而不是弹出提示（默认：`False`）
 
-!!! tip "Evaluating on SWE-bench"
+!!! tip "在 SWE-bench 上评测"
 
-    You have two options to evaluate on SWE-bench: Our free cloud-based evaluation or the SWE-bench CLI.
+    你有两种方式在 SWE-bench 上评测：我们的免费云端评测，或者 SWE-bench CLI。
 
-    === "Cloud-based evaluation"
+    === "云端评测"
 
-        You can use the [sb-cli](https://www.swebench.com/sb-cli/) for extremely fast, cloud-based evaluations
-        (and it's free!). After installing it and getting a token, simply run:
+        你可以使用 [sb-cli](https://www.swebench.com/sb-cli/) 进行极其快速的云端评测
+        （而且是免费的！）。安装它并获取 token 之后，只需运行：
 
         ```bash
         sb-cli submit swe-bench_verified test --predictions_path preds.json --run_id some-id-for-your-run
         ```
 
-        Typically you will have results within 20 minutes (this is not limited by how many instances you run,
-        but by the slowest-to-evaluate instance in SWE-bench).
+        通常你会在 20 分钟内拿到结果（这不取决于你运行了多少实例，
+        而取决于 SWE-bench 中评测最慢的那个实例）。
 
-    === "Local evaluation"
+    === "本地评测"
 
-        You can also use a local installation of [SWE-bench](https://github.com/SWE-bench/SWE-bench)
-        for evaluation:
+        你也可以使用本地安装的 [SWE-bench](https://github.com/SWE-bench/SWE-bench)
+        进行评测：
 
         ```bash
         python -m swebench.harness.run_evaluation \
@@ -134,91 +134,91 @@
             --run_id <run_id>
         ```
 
-## FAQ
+## 常见问题
 
-> Can I set global cost limits?
+> 我可以设置全局成本上限吗？
 
-Yes, you can set global cost limits with the `MSWEA_GLOBAL_CALL_LIMIT` and `MSWEA_GLOBAL_COST_LIMIT` environment variables/global config.
-See [global configuration](../advanced/global_configuration.md) for more details.
+可以，你可以通过 `MSWEA_GLOBAL_CALL_LIMIT` 和 `MSWEA_GLOBAL_COST_LIMIT` 环境变量／全局配置来设置全局成本上限。
+更多细节请参见[全局配置](../advanced/global_configuration.md)。
 
-> What happens to uncompleted tasks when I abort with KeyboardInterrupt?
+> 当我用 KeyboardInterrupt 中止时，未完成的任务会怎样？
 
-Trajectories are only saved upon completion, so most likely, you can just rerun the script to complete the tasks next time.
-However, you should still check for `KeyboardInterrupt` in `preds.json` in case some tasks were aborted but saved.
+轨迹只会在完成时保存，所以大多数情况下，你下次重新运行脚本即可完成任务。
+不过，你仍应检查 `preds.json` 中是否有 `KeyboardInterrupt`，以防某些任务被中止但已保存。
 
-> Certain tasks are being stuck even though I deleted the trajectories.
+> 即使我删除了轨迹，某些任务还是卡住了。
 
-The completed instances are inferred from `preds.json`. Remove the corresponding items from the file.
+已完成的实例是从 `preds.json` 推断出来的。请从该文件中删除对应的条目。
 
-> How can I run on a different dataset?
+> 如何在不同数据集上运行？
 
-As long as it follows the SWE-bench format, you can use `--subset /path/to/your/dataset` to run on a custom dataset.
-The dataset needs to be loadable as `datasets.load_dataset(path, split=split)`.
+只要它遵循 SWE-bench 格式，你就可以用 `--subset /path/to/your/dataset` 在自定义数据集上运行。
+该数据集需要能通过 `datasets.load_dataset(path, split=split)` 加载。
 
-> Some progress runners are stuck at 'initializing task' for a very long time / time out
+> 有些进度运行器长时间卡在“initializing task”／超时
 
-They might be pulling docker containers -- the run should start immediately the next time.
-If you see timeouts because of `docker pull` operations, you might want to increase `environment.pull_timeout`
-from the default of `120` (seconds).
+它们可能正在拉取 docker 容器——下次运行应该会立刻开始。
+如果你看到因为 `docker pull` 操作导致的超时，可能想把 `environment.pull_timeout`
+从默认的 `120`（秒）调大一些。
 
-> I have some docker issues
+> 我遇到了一些 docker 问题
 
-Try running the docker command manually to see what's going on (it should be printed out in the console).
-Confirm that it's running with `docker ps`, and that you can use `docker exec -it <container-id> ls` to get some output.
+试着手动运行那条 docker 命令，看看发生了什么（它应该会打印到控制台上）。
+用 `docker ps` 确认它正在运行，并确认你可以用 `docker exec -it <container-id> ls` 得到一些输出。
 
-> Docker isn't available on my HPC cluster.
+> 我的 HPC 集群上没有 Docker。
 
-You can use the singularity/apptainer backend by setting `environment.environment_class` to `singularity`
-in your [agent config file](../advanced/yaml_configuration.md)
-or specify `--environment-class singularity` from the command line
+你可以在[智能体配置文件](../advanced/yaml_configuration.md)中把 `environment.environment_class` 设为 `singularity`，
+从而使用 singularity/apptainer 后端；
+或者在命令行中指定 `--environment-class singularity`
 
-> Can I run a startup command in the environment?
+> 我可以在环境中运行启动命令吗？
 
-Yes, you can use the `run.env_startup_command` config option to run a command in the environment before the agent starts.
-For example:
+可以，你可以使用 `run.env_startup_command` 配置项，在智能体启动前于环境中运行一条命令。
+例如：
 
 ```yaml
 run:
   env_startup_command: "apt-get update && apt-get install -y python3-pip"
 ```
 
-The command is rendered with the instance variables as template variables using `jinja2`.
-For example, you could use
+该命令会使用 `jinja2`，把实例的变量作为模板变量进行渲染。
+例如，你可以这样写：
 
 ```yaml
 run:
   env_startup_command: "git clone {{ repo_url }} . --force"
 ```
 
-which might be particularly useful when running with environments like [`bubblewrap`](../reference/environments/bubblewrap.md).
+在使用 [`bubblewrap`](../reference/environments/bubblewrap.md) 之类的环境运行时，这可能特别有用。
 
-> What environment can I use for SWE-bench?
+> SWE-bench 可以使用什么环境？
 
-See [this guide](../advanced/environments.md) for more details.
+更多细节请参见[这份指南](../advanced/environments.md)。
 
-## Implementation
+## 实现
 
-??? note "Default config"
+??? note "默认配置"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/benchmarks/swebench.yaml)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/benchmarks/swebench.yaml)
 
     ```yaml
     --8<-- "src/minisweagent/config/benchmarks/swebench.yaml"
     ```
 
-??? note "`swebench.py` run script"
+??? note "`swebench.py` 运行脚本"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/benchmarks/swebench.py)
-    - [API reference](../reference/run/swebench.md)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/benchmarks/swebench.py)
+    - [API 参考](../reference/run/swebench.md)
 
     ```python
     --8<-- "src/minisweagent/run/benchmarks/swebench.py"
     ```
 
-??? note "`swebench_single.py` run script"
+??? note "`swebench_single.py` 运行脚本"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/benchmarks/swebench_single.py)
-    - [API reference](../reference/run/swebench_single.md)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/benchmarks/swebench_single.py)
+    - [API 参考](../reference/run/swebench_single.md)
 
     ```python
     --8<-- "src/minisweagent/run/benchmarks/swebench_single.py"

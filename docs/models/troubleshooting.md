@@ -1,12 +1,12 @@
-# Model trouble shooting
+# 模型故障排查
 
-This section has examples of common error messages and how to fix them.
+本节收录了常见错误信息以及对应的解决方法。
 
 ## Litellm
 
-`litellm` is the default model class and is used to support most models.
+`litellm` 是默认的模型类，用于支持大多数模型。
 
-### Invalid API key
+### API key 无效
 
 ```json
 AuthenticationError: litellm.AuthenticationError: geminiException - {
@@ -34,15 +34,15 @@ AuthenticationError: litellm.AuthenticationError: geminiException - {
  You can permanently set your API key with `mini-extra config set KEY VALUE`.
 ```
 
-Double check your API key and make sure it is correct.
-You can take a look at all your API keys with `mini-extra config edit`.
+请仔细检查你的 API key，确保它是正确的。
+你可以用 `mini-extra config edit` 查看所有 API key。
 
-### "Weird" authentication error
+### “奇怪的”认证错误
 
-If you fail to authenticate but don't see the previous error message,
-it might be that you forgot to include the provider in the model name.
+如果你认证失败，但看到的不是上面那条错误信息，
+那可能是你忘了在模型名称中包含提供商。
 
-For example, this:
+例如，下面这个：
 
 ```
   File "/Users/.../.virtualenvs/openai/lib/python3.12/site-packages/google/auth/_default.py", line 685, in default
@@ -51,32 +51,31 @@ google.auth.exceptions.DefaultCredentialsError: Your default credentials were no
 https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
 ```
 
-happens if you forgot to prefix your gemini model with `gemini/`.
+就是因为你忘了给 gemini 模型加上 `gemini/` 前缀。
 
-### Error during cost calculation
+### 计算成本时出错
 
 ```
 Exception: This model isn't mapped yet. model=together_ai/qwen/qwen3-coder-480b-a35b-instruct-fp8, custom_llm_provider=together_ai.
 Add it here - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json.
 ```
 
-`litellm` doesn't know about the cost of your model.
-Take a look at the model registry section of the [local models](local_models.md) guide to add it.
+`litellm` 不知道你这个模型的成本。
+请参考[本地模型](local_models.md)指南中的模型注册表一节来添加它。
 
-Another common mistake is to not include any or the correct provider in the model name (e.g., `gemini-2.0-flash` instead of `gemini/gemini-2.0-flash`).
+另一个常见错误是模型名称中完全没有提供商，或提供商写错了（例如写成 `gemini-2.0-flash` 而不是 `gemini/gemini-2.0-flash`）。
 
-## Temperature not supported
+## 不支持 temperature
 
-Some models (like `o1`, `o3`, `GPT-5` etc.) do not support temperature. The default config no longer specifies a temperature value, so this should work out of the box now.
+有些模型（例如 `o1`、`o3`、`GPT-5` 等）不支持 temperature。默认配置已不再指定 temperature 值，所以现在开箱即用应该没问题。
 
 ## Portkey
 
-### Error during cost calculation
+### 计算成本时出错
 
-We use `litellm` to calculate costs for Portkey models because Portkey doesn't seem to provide per-request cost information without
-very inconvenient APIs.
+我们使用 `litellm` 来计算 Portkey 模型的成本，因为 Portkey 似乎无法通过方便的 API 提供每次请求的成本信息。
 
-This can lead to errors likethis:
+这可能导致如下错误：
 
 ```
   File "/opt/miniconda3/envs/clash/lib/python3.10/site-packages/minisweagent/models/portkey_model.py", line 85, in query
@@ -97,17 +96,17 @@ litellm.exceptions.BadRequestError: litellm.BadRequestError: LLM Provider NOT pr
  Pass model as E.g. For 'Huggingface' inference endpoints pass in `completion(model='huggingface/starcoder',..)` Learn more: https://docs.litellm.ai/docs/providers
 ```
 
-In this case, the issue is simply that the portkey model name doesn't match the litellm model name (and very specifically here
-doesn't include the provider).
+在这种情况下，问题仅仅在于 portkey 的模型名称与 litellm 的模型名称不匹配（具体到这里，
+就是没有包含提供商）。
 
-To fix this, you can manually set the litellm model name to the portkey model name with the `litellm_model_name_override` key.
-For example:
+要解决这个问题，你可以用 `litellm_model_name_override` 键手动把 litellm 模型名称设为 portkey 的模型名称。
+例如：
 
 ```yaml
 model:
-  model_name: "grok-code-fast-1"  # the portkey model name
-  model_class: "portkey"  # make sure to use the portkey model class
-  litellm_model_name_override: "xai/grok-code-fast-1"  # the litellm model name for cost information
+  model_name: "grok-code-fast-1"  # portkey 的模型名称
+  model_class: "portkey"  # 确保使用 portkey 模型类
+  litellm_model_name_override: "xai/grok-code-fast-1"  # 用于成本信息的 litellm 模型名称
   ...
 ```
 

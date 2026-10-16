@@ -1,16 +1,16 @@
 # Config
 
-!!! note "Global Config Manager"
+!!! note "全局配置管理器"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/utilities/config.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/utilities/config.py)
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/run/utilities/config.py"
         ```
 
-Utility to manage the global config file via `mini-extra config`.
+通过 `mini-extra config` 管理全局配置文件的实用工具。
 
 ::: minisweagent.run.utilities.config
 

@@ -1,10 +1,10 @@
 # Singularity
 
-!!! note "Singularity Environment class"
+!!! note "Singularity 环境类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/singularity.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/singularity.py)
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/environments/singularity.py"

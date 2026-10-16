@@ -1,8 +1,8 @@
 # SWE-bench
 
-!!! note "SWE-bench run script"
+!!! note "SWE-bench 运行脚本"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/benchmarks/swebench.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/benchmarks/swebench.py)
 
 ::: minisweagent.run.benchmarks.swebench
 

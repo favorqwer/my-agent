@@ -1,25 +1,25 @@
-# Model setup quickstart
+# 模型设置快速入门
 
-!!! tip "Setup"
+!!! tip "设置"
 
-    * In most cases, you can simply run `mini-extra config setup` to set up your default model and API keys.
-      This should be run the first time you run `mini`.
-    * By default we support all models using [`litellm`](https://github.com/BerriAI/litellm).
-    * We also offer support for models via [Openrouter](https://openrouter.ai/) and [Portkey](https://portkey.ai/).
+    * 大多数情况下，你只需运行 `mini-extra config setup` 即可设置默认模型和 API key。
+      首次运行 `mini` 时应该也会自动运行它。
+    * 默认情况下，我们通过 [`litellm`](https://github.com/BerriAI/litellm) 支持所有模型。
+    * 我们也支持通过 [Openrouter](https://openrouter.ai/) 和 [Portkey](https://portkey.ai/) 使用模型。
 
-## Setting API keys
+## 设置 API key
 
-There are several ways to set your API keys:
+有几种设置 API key 的方式：
 
-* **Recommended**: Run our setup script: `mini-extra config setup`. This should also run automatically the first time you run `mini`.
-* Use `mini-extra config set ANTHROPIC_API_KEY <your-api-key>` to put the key in the `mini` [config file](../advanced/global_configuration.md).
-* Export your key as an environment variable: `export ANTHROPIC_API_KEY=<your-api-key>` (this is not persistent if you restart your shell, unless you add it to your shell config, like `~/.bashrc` or `~/.zshrc`).
-* If you run several agents in parallel, see our note about rotating anthropic keys [here](../advanced/global_configuration.md).
+* **推荐**：运行我们的设置脚本：`mini-extra config setup`。首次运行 `mini` 时它应该也会自动运行。
+* 使用 `mini-extra config set ANTHROPIC_API_KEY <your-api-key>` 把 key 写入 `mini` 的[配置文件](../advanced/global_configuration.md)。
+* 把 key 导出为环境变量：`export ANTHROPIC_API_KEY=<your-api-key>`（重启 shell 后不会保留，除非你把它加到 shell 配置文件中，比如 `~/.bashrc` 或 `~/.zshrc`）。
+* 如果你要并行运行多个智能体，请参见我们关于轮换 anthropic key 的说明（见[这里](../advanced/global_configuration.md)）。
 
-??? note "All the API key names"
+??? note "所有 API key 名称"
 
-    We use [`litellm`](https://github.com/BerriAI/litellm) to support most models.
-    Here's a list of all the API key names available in `litellm`:
+    我们使用 [`litellm`](https://github.com/BerriAI/litellm) 来支持大多数模型。
+    以下是 `litellm` 中可用的所有 API key 名称列表：
 
     ```
     ALEPH_ALPHA_API_KEY
@@ -72,25 +72,25 @@ There are several ways to set your API keys:
     XINFERENCE_API_KEY
     ```
 
-    In addition, Portkey models use the `PORTKEY_API_KEY` environment variable.
+    此外，Portkey 模型使用 `PORTKEY_API_KEY` 环境变量。
 
-## Selecting a model
+## 选择模型
 
-!!! note "Model names and providers."
+!!! note "模型名称与提供商。"
 
-    We support most models using [`litellm`](https://github.com/BerriAI/litellm).
-    You can find a list of their supported models [here](https://docs.litellm.ai/docs/providers).
-    Please always include the provider in the model name, e.g., `anthropic/claude-...`.
+    我们使用 [`litellm`](https://github.com/BerriAI/litellm) 支持大多数模型。
+    你可以[在这里](https://docs.litellm.ai/docs/providers)找到其支持的模型列表。
+    请务必在模型名称中包含提供商，例如 `anthropic/claude-...`。
 
-* **Recommended**: `mini-extra config setup` (should be run the first time you run `mini`) can set the default model for you
-* All command line interfaces allow you to set the model name with `-m` or `--model`.
-* In addition, you can set the default model with `mini-extra config set MSWEA_MODEL_NAME <model-name>`, by editing the global [config file](../advanced/global_configuration.md) (shortcut: `mini-extra config edit`), or by setting the `MSWEA_MODEL_NAME` environment variable.
-* You can also set your model in a config file (key `model_name` under `model`).
-* If you want to use local models, please check this [guide](local_models.md).
+* **推荐**：`mini-extra config setup`（首次运行 `mini` 时应会自动运行）可以为你设置默认模型
+* 所有命令行界面都允许你通过 `-m` 或 `--model` 设置模型名称。
+* 此外，你还可以通过 `mini-extra config set MSWEA_MODEL_NAME <model-name>`、编辑全局[配置文件](../advanced/global_configuration.md)（快捷方式：`mini-extra config edit`），或设置 `MSWEA_MODEL_NAME` 环境变量来设置默认模型。
+* 你也可以在配置文件中设置模型（`model` 下的 `model_name` 键）。
+* 如果你想使用本地模型，请查看这份[指南](local_models.md)。
 
-!!! note "Popular models"
+!!! note "常用模型"
 
-    Here's a few examples of popular models:
+    以下是一些常用模型的示例：
 
     ```
     anthropic/claude-opus-4-6-20260205
@@ -100,27 +100,27 @@ There are several ways to set your API keys:
     deepseek/deepseek-chat
     ```
 
-    ??? note "List of all supported models"
+    ??? note "所有受支持模型的列表"
 
-        Here's a list of all model names supported by `litellm` as of Aug 29th 2025.
-        For even more recent models, check the [`model_prices_and_context_window.json` file from litellm](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json).
+        以下是截至 2025 年 8 月 29 日 `litellm` 支持的所有模型名称列表。
+        如需更新的模型，请查看 [litellm 的 `model_prices_and_context_window.json` 文件](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)。
 
         ```
         --8<-- "docs/data/all_models.txt"
         ```
 
-To find the corresponding API key, check the previous section.
+要找到对应的 API key，请查看上一节。
 
-## Extra model settings
+## 额外的模型设置
 
-To configure reasoning efforts or similar settings, you need to edit the [agent config file](../advanced/yaml_configuration.md).
-In newer versions, the location of the config file is printed when you run `mini` ("agent config" in the output).
+要配置推理强度（reasoning effort）或类似设置，你需要编辑[智能体配置文件](../advanced/yaml_configuration.md)。
+在较新的版本中，运行 `mini` 时会打印配置文件的位置（输出中的 "agent config"）。
 
-Here's a few general examples:
+以下是一些通用示例：
 
 === "Temperature"
 
-    `litellm` allows to set model-specific settings with the `model_kwargs` key:
+    `litellm` 允许通过 `model_kwargs` 键设置模型专属设置：
 
     ```yaml
     model:
@@ -129,11 +129,11 @@ Here's a few general examples:
           temperature: 0.0
     ```
 
-    Note that temperature isn't supported by all models.
+    注意，并非所有模型都支持 temperature。
 
-=== "GPT-5 reasoning effort (Chat Completions API)"
+=== "GPT-5 推理强度（Chat Completions API）"
 
-    `litellm` allows to set model-specific settings with the `model_kwargs` key:
+    `litellm` 允许通过 `model_kwargs` 键设置模型专属设置：
 
     ```yaml
     model:
@@ -144,11 +144,11 @@ Here's a few general examples:
         verbosity: "medium"
     ```
 
-    Here, `drop_params` is used to drop any parameters that are not supported by the model.
+    这里用 `drop_params` 来丢弃模型不支持的参数。
 
-=== "GPT-5 with Responses API"
+=== "使用 Responses API 的 GPT-5"
 
-    For OpenAI models that support the Responses API, you can use the `litellm_response_toolcall` model class:
+    对于支持 Responses API 的 OpenAI 模型，你可以使用 `litellm_response_toolcall` 模型类：
 
     ```yaml
     model:
@@ -162,10 +162,9 @@ Here's a few general examples:
 
 === "OpenRouter"
 
-    This example explicitly sets the model class to `openrouter` (see the next section for more details).
-    It also explicitly sets the providers to disable switching between them (this is useful if you need
-    very consistent cost behavior, e.g., for benchmarking, but it's not recommended if you're just interested
-    in getting low latency and good prices).
+    本示例显式把模型类设为 `openrouter`（更多细节见下一节）。
+    它还显式指定了提供商，以禁用它们之间的切换（如果你需要非常一致的成本行为，
+    例如做基准评测，这会很有用；但如果你只是想要低延迟和好价格，则不推荐这样做）。
 
     ```yaml
     model:
@@ -178,9 +177,9 @@ Here's a few general examples:
               only: ["Moonshot AI"]
     ```
 
-=== "Local models"
+=== "本地模型"
 
-    Using `litellm` with local models:
+    将 `litellm` 与本地模型配合使用：
 
     ```yaml
     model:
@@ -191,12 +190,12 @@ Here's a few general examples:
         ...
     ```
 
-    See [this guide](local_models.md) for more details on local models.
-    In particular, you need to configure token costs for local models.
+    本地模型的更多细节请参见[这份指南](local_models.md)。
+    特别地，你需要为本地模型配置 token 成本。
 
-Here are more examples of how to configure specific models:
+以下是配置特定模型的更多示例：
 
-=== "Gemini 3 (Openrouter)"
+=== "Gemini 3（Openrouter）"
 
     ```yaml
     model:
@@ -206,7 +205,7 @@ Here are more examples of how to configure specific models:
             temperature: 0.0
     ```
 
-=== "GPT 5.1 medium (Portkey)"
+=== "GPT 5.1 medium（Portkey）"
 
     ```yaml
     model:
@@ -226,7 +225,7 @@ Here are more examples of how to configure specific models:
             temperature: 0.0
     ```
 
-=== "GPT 5 mini (Portkey)"
+=== "GPT 5 mini（Portkey）"
 
     ```yaml
     model:
@@ -243,7 +242,7 @@ Here are more examples of how to configure specific models:
             temperature: 0.0
     ```
 
-=== "Minimax (Openrouter)"
+=== "Minimax（Openrouter）"
 
     ```yaml
     model:
@@ -253,24 +252,24 @@ Here are more examples of how to configure specific models:
             temperature: 0.0
     ```
 
-## Model classes
+## 模型类
 
-We support the various models through different backends.
-By default (if you only specify the model name), we pick the best backend for you.
-This will almost always default to `litellm` (with Anthropic models being a special case as they need to have explicit cache breakpoint handling).
+我们通过不同的后端支持各种模型。
+默认情况下（如果你只指定模型名称），我们会为你挑选最合适的后端。
+这几乎总是默认为 `litellm`（Anthropic 模型是个特例，因为它们需要显式的缓存断点处理）。
 
-However, there are a few other backends that you can use and specify with the `--model-class` flag or the
-`model.model_class` key in the agent config file (see previous section).
+不过，还有一些其他后端可供使用，你可以通过 `--model-class` 参数或智能体配置文件中的
+`model.model_class` 键来指定（见上一节）。
 
-For example:
+例如：
 
-=== "Openrouter model"
+=== "Openrouter 模型"
 
     ```bash
     mini -m "moonshotai/kimi-k2-0905" --model-class openrouter
     ```
 
-    **Alternatively:** In the agent config file:
+    **或者：**在智能体配置文件中：
 
     ```yaml
     model:
@@ -278,13 +277,13 @@ For example:
         model_class: openrouter
     ```
 
-=== "Portkey model"
+=== "Portkey 模型"
 
     ```bash
     mini -m "claude-sonnet-4-5-20250929" --model-class portkey
     ```
 
-    **Alternatively:** In the agent config file:
+    **或者：**在智能体配置文件中：
     ```yaml
     model:
         model_name: "claude-sonnet-4-5-20250929"
@@ -292,20 +291,20 @@ For example:
     ```
 
 
-* **`litellm`** ([`LitellmModel`](../reference/models/litellm.md)) - **Default and recommended**. Supports most models through [litellm](https://github.com/BerriAI/litellm). Works with OpenAI, Anthropic, Google, and many other providers. Anthropic models automatically get cache control settings when the model name contains "anthropic", "claude", "sonnet", or "opus".
+* **`litellm`**（[`LitellmModel`](../reference/models/litellm.md)）—— **默认且推荐**。通过 [litellm](https://github.com/BerriAI/litellm) 支持大多数模型。可用于 OpenAI、Anthropic、Google 等众多提供商。当模型名称包含 "anthropic"、"claude"、"sonnet" 或 "opus" 时，Anthropic 模型会自动获得缓存控制设置。
 
-* **`litellm_response`** ([`LitellmResponseModel`](../reference/models/litellm_response_toolcall.md)) - Specialized version of `LitellmModel` that uses OpenAI's Responses API with native tool calling. Useful for models like GPT-5 and required for models like GPT-5-codex. Maintains conversation state across turns.
+* **`litellm_response`**（[`LitellmResponseModel`](../reference/models/litellm_response_toolcall.md)）—— `LitellmModel` 的专用版本，使用 OpenAI 的 Responses API 和原生工具调用。适用于 GPT-5 之类的模型，并且是 GPT-5-codex 之类模型的必需项。它会跨轮次维护对话状态。
 
-* **`openrouter`** ([`OpenRouterModel`](../reference/models/openrouter.md)) - Direct integration with [OpenRouter](https://openrouter.ai/) API for accessing various models through a single endpoint.
+* **`openrouter`**（[`OpenRouterModel`](../reference/models/openrouter.md)）—— 直接集成 [OpenRouter](https://openrouter.ai/) API，通过单一端点访问各种模型。
 
-* **`portkey`** ([`PortkeyModel`](../reference/models/portkey.md)) - Integration with [Portkey](https://portkey.ai/) for accessing various models with enhanced observability, caching, and routing features. Note that this still uses `litellm` to calculate costs.
+* **`portkey`**（[`PortkeyModel`](../reference/models/portkey.md)）—— 集成 [Portkey](https://portkey.ai/)，以提供增强的可观测性、缓存和路由能力。注意它仍然使用 `litellm` 来计算成本。
 
-On top, there's a few more exotic model classes that you can use:
+此外，还有一些更“另类”的模型类可供使用：
 
-* **`deterministic`** ([`DeterministicModel`](../reference/models/test_models.md)) - Returns predefined responses for testing and development purposes.
-* **`minisweagent.models.extra.roulette.RouletteModel` and `minisweagent.models.extra.roulette.InterleavingModel`** ([`RouletteModel`](../reference/models/extra.md) and [`InterleavingModel`](../reference/models/extra.md)) - Randomly selects or interleaves multiple configured models for each query. See [this blog post](https://www.swebench.com/SWE-bench/blog/2025/08/19/mini-roulette/) for more details.
+* **`deterministic`**（[`DeterministicModel`](../reference/models/test_models.md)）—— 返回预定义的响应，用于测试和开发。
+* **`minisweagent.models.extra.roulette.RouletteModel` 和 `minisweagent.models.extra.roulette.InterleavingModel`**（[`RouletteModel`](../reference/models/extra.md) 和 [`InterleavingModel`](../reference/models/extra.md)）—— 每次查询时随机选择或交替使用多个已配置的模型。更多细节请参见[这篇博客文章](https://www.swebench.com/SWE-bench/blog/2025/08/19/mini-roulette/)。
 
-As with the last two, you can also specify any import path to your own custom model class (even if it is not yet part of the mini-SWE-agent package).
+与后两者类似，你也可以指定指向自己自定义模型类的任意导入路径（即使它还不属于 mini-SWE-agent 包）。
 
 --8<-- "docs/_footer.md"
 

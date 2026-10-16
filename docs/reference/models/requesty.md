@@ -1,10 +1,10 @@
 # Requesty Model
 
-!!! note "Requesty Model class"
+!!! note "Requesty 模型类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/requesty_model.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/requesty_model.py)
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/models/requesty_model.py"

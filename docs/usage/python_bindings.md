@@ -1,9 +1,9 @@
-# Python bindings
+# Python 绑定
 
-!!! abstract "Overview"
+!!! abstract "概览"
 
-    This page shows the most basic example of how to use mini-SWE-agent as a Python library.
-    For more advanced usage, subclassing, and mix & match of components, see [subclassing and more](../advanced/cookbook.md).
+    本页展示了把 mini-SWE-agent 作为 Python 库使用的最基本示例。
+    关于更高级的用法、子类化以及组件的混搭组合，请参见[子类化与更多内容](../advanced/cookbook.md)。
 
 ## Hello world
 
@@ -23,7 +23,7 @@ agent = DefaultAgent(
     LocalEnvironment(),
 )
 
-# Run the agent
+# 运行智能体
 agent.run(task)
 ```
 

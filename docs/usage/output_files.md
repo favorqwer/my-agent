@@ -1,78 +1,78 @@
-# Output files
+# 输出文件
 
-!!! abstract "Overview"
+!!! abstract "概览"
 
-    mini-SWE-agent saves run results in JSON format. This page documents the structure of these output files.
+    mini-SWE-agent 以 JSON 格式保存运行结果。本页记录这些输出文件的结构。
 
-## Trajectory files (`.traj.json`)
+## 轨迹文件（`.traj.json`）
 
-!!! warning "v2.0 format changes"
+!!! warning "v2.0 格式变更"
 
-    The output format changed in v2.0 (`trajectory_format: mini-swe-agent-1.1`). See the [v2 migration guide](../advanced/v2_migration.md) for more information.
+    输出格式在 v2.0 中发生了变化（`trajectory_format: mini-swe-agent-1.1`）。更多信息请参见 [v2 迁移指南](../advanced/v2_migration.md)。
 
-!!! tip "Viewing trajectory files"
+!!! tip "查看轨迹文件"
 
-    Use the [inspector](inspector.md) to browse trajectory files interactively.
+    使用 [inspector](inspector.md) 以交互方式浏览轨迹文件。
 
-Trajectory files contain the full history of an agent run, including all messages, configuration, and metadata.
+轨迹文件包含一次智能体运行的完整历史，包括所有消息、配置和元数据。
 
-### Structure
+### 结构
 
 ```json
 {
   "info": {
     "model_stats": {
-      "instance_cost": 0.05,  // total cost of API calls for this run
-      "api_calls": 12  // number of API calls made
+      "instance_cost": 0.05,  // 本次运行 API 调用的总成本
+      "api_calls": 12  // 发起的 API 调用次数
     },
     "config": {
-      "agent": { ... },  // agent configuration
+      "agent": { ... },  // 智能体配置
       "agent_type": "minisweagent.agents.default.DefaultAgent",
-      "model": { ... },  // model configuration
+      "model": { ... },  // 模型配置
       "model_type": "minisweagent.models.litellm_model.LitellmModel",
-      "environment": { ... },  // environment configuration
+      "environment": { ... },  // 环境配置
       "environment_type": "minisweagent.environments.local.LocalEnvironment"
     },
-    "mini_version": "2.0.0",  // version of mini-SWE-agent used
-    "exit_status": "Submitted",  // final status (Submitted, LimitsExceeded, etc.)
-    "submission": "..."  // final output/patch submitted by the agent (if any)
+    "mini_version": "2.0.0",  // 所使用的 mini-SWE-agent 版本
+    "exit_status": "Submitted",  // 最终状态（Submitted、LimitsExceeded 等）
+    "submission": "..."  // 智能体提交的最终输出／补丁（如果有）
   },
-  "messages": [  // full conversation history
+  "messages": [  // 完整对话历史
     {"role": "system", "content": "..."},
     {"role": "user", "content": "..."},
     {"role": "assistant", "content": "..."},
     ...
   ],
-  "trajectory_format": "mini-swe-agent-1.1"  // format version identifier
+  "trajectory_format": "mini-swe-agent-1.1"  // 格式版本标识符
 }
 ```
 
 
-Messages follow the [OpenAI chat format](https://platform.openai.com/docs/api-reference/chat) with an additional `extra` field for mini-SWE-agent metadata. Models may add other fields to messages (e.g., `tool_calls`, `reasoning_content`).
+消息遵循 [OpenAI 聊天格式](https://platform.openai.com/docs/api-reference/chat)，并额外带有一个 `extra` 字段用于存放 mini-SWE-agent 的元数据。模型可能会给消息添加其他字段（例如 `tool_calls`、`reasoning_content`）。
 
-!!! note "Toolcall models"
-    When using toolcall-based models (e.g., `LitellmToolcallModel`), the roles differ slightly: assistant messages include `tool_calls` instead of content, and observation messages use `role: "tool"` with a `tool_call_id` field.
+!!! note "工具调用类模型"
+    使用基于工具调用的模型（例如 `LitellmToolcallModel`）时，角色略有不同：assistant 消息包含 `tool_calls` 而不是 content，观察（observation）消息使用 `role: "tool"` 并带有一个 `tool_call_id` 字段。
 
 ```json
-// System message (agent instructions)
+// 系统消息（智能体指令）
 {"role": "system", "content": "You are a helpful assistant..."}
 
-// User message (task description)
+// 用户消息（任务描述）
 {"role": "user", "content": "Please solve this issue: ..."}
 
-// Assistant message (model response with parsed actions)
+// assistant 消息（模型响应，包含解析出的动作）
 {
   "role": "assistant",
   "content": "Let me check the files...\n\n```mswea_bash_command\nls -la\n```",
   "extra": {
-    "actions": [{"command": "ls -la"}],  // parsed actions to execute
-    "cost": 0.003,  // cost of this API call
-    "timestamp": 1706000000.0,  // unix timestamp of when this message was created
-    "response": { ... }  // raw API response
+    "actions": [{"command": "ls -la"}],  // 解析出待执行的动作
+    "cost": 0.003,  // 本次 API 调用的成本
+    "timestamp": 1706000000.0,  // 该消息创建时的 unix 时间戳
+    "response": { ... }  // API 的原始响应
   }
 }
 
-// Observation message (execution result)
+// 观察消息（执行结果）
 {
   "role": "user",
   "content": "<returncode>0</returncode>\n<output>\nfile1.py\nfile2.py\n</output>",
@@ -82,7 +82,7 @@ Messages follow the [OpenAI chat format](https://platform.openai.com/docs/api-re
   }
 }
 
-// Final message (when agent submits)
+// 最终消息（智能体提交时）
 {
   "role": "user",
   "content": "",
@@ -94,16 +94,16 @@ Messages follow the [OpenAI chat format](https://platform.openai.com/docs/api-re
 ```
 
 
-## `preds.json` format
+## `preds.json` 格式
 
-The predictions file aggregates results from all instances in a format compatible with SWE-bench evaluation:
+预测文件汇总了所有实例的结果，其格式与 SWE-bench 评测兼容：
 
 ```json
 {
-  "owner__repo__123": {  // keyed by instance_id
-    "model_name_or_path": "anthropic/claude-sonnet-4-5-20250929",  // model used
-    "instance_id": "owner__repo__123",  // SWE-bench instance identifier
-    "model_patch": "diff --git a/file.py b/file.py\n..."  // generated patch (unified diff)
+  "owner__repo__123": {  // 以 instance_id 为键
+    "model_name_or_path": "anthropic/claude-sonnet-4-5-20250929",  // 所使用的模型
+    "instance_id": "owner__repo__123",  // SWE-bench 实例标识符
+    "model_patch": "diff --git a/file.py b/file.py\n..."  // 生成的补丁（unified diff）
   },
   ...
 }

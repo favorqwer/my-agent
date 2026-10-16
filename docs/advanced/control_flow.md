@@ -1,42 +1,42 @@
-# Agent control flow
+# 智能体控制流
 
-!!! note "Understanding AI agent basics"
+!!! note "理解 AI 智能体的基础知识"
 
-    We also recently created a long tutorial on understanding the basics of building an AI agent: [View it here](https://minimal-agent.com).
+    我们最近还制作了一篇关于理解构建 AI 智能体基础知识的详细教程：[点此查看](https://minimal-agent.com)。
 
-!!! abstract "Understanding the default agent"
+!!! abstract "理解默认智能体"
 
-    * This guide shows the control flow of the default agent.
-    * After this, you're ready to [remix & extend mini](cookbook.md)
+    * 本指南展示了默认智能体的控制流。
+    * 看完之后，你就可以[混搭与扩展 mini](cookbook.md) 了
 
-The following diagram shows the control flow of the mini agent:
+下图展示了 mini 智能体的控制流：
 
 ```mermaid
 flowchart TD
     subgraph run["<b><code>Agent.run(task)</code></b>"]
         direction TB
-        A["<b><code>Initialize messages</code></b>"] --> B
-        B["<b><code>Agent.step</code></b>"] --> C{"<b><code>Exception?</code></b>"}
-        C -->|Yes| D["<b><code>Agent.add_messages</code></b><br/>(also re-raises exceptions that don't inherit from InterruptAgentFlow)"]
-        C -->|No| E{"<b><code>messages[-1].role == exit?</code></b>"}
+        A["<b><code>初始化消息</code></b>"] --> B
+        B["<b><code>Agent.step</code></b>"] --> C{"<b><code>有异常吗？</code></b>"}
+        C -->|是| D["<b><code>Agent.add_messages</code></b><br/>(同时会重新抛出那些不继承自 InterruptAgentFlow 的异常)"]
+        C -->|否| E{"<b><code>messages[-1].role == exit?</code></b>"}
         D --> E
-        E -->|No| B
-        E -->|Yes| F["<b><code>Return result</code></b>"]
+        E -->|否| B
+        E -->|是| F["<b><code>返回结果</code></b>"]
     end
 
-    subgraph step["<b><code>Agent.step()</code></b><br>Single iteration</br>"]
+    subgraph step["<b><code>Agent.step()</code></b><br>单次迭代</br>"]
         direction TB
         S1["<b><code>Agent.query</code></b>"] --> S2["<b><code>Agent.execute_actions</code></b>"]
     end
 
-    subgraph query["<b><code>Agent.query()</code></b><br>Also checks for cost limits</br><br></br>"]
+    subgraph query["<b><code>Agent.query()</code></b><br>同时检查成本上限</br><br></br>"]
         direction TB
         Q3["<b><code>Model.query</code></b>"] --> Q4["<b><code>Agent.add_messages</code></b>"]
     end
 
     subgraph execute_actions["<b><code>Agent.execute_actions(message)</code></b>"]
         direction TB
-        E2["<b><code>Environment.execute</code></b><br/>Also raises the Submitted exception if we're done"] --> E3["<b><code>Model.format_observation_messages</code></b>"]
+        E2["<b><code>Environment.execute</code></b><br/>如果任务已完成，还会抛出 Submitted 异常"] --> E3["<b><code>Model.format_observation_messages</code></b>"]
         E3 --> E4["<b><code>Agent.add_messages</code></b>"]
     end
 
@@ -45,34 +45,34 @@ flowchart TD
     S2 -.-> execute_actions
 ```
 
-And here is the code that implements it:
+下面是实现该控制流的代码：
 
-??? note "Default agent class"
+??? note "默认智能体类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py)
-    - [API reference](../reference/agents/default.md)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py)
+    - [API 参考](../reference/agents/default.md)
 
     ```python
     --8<-- "src/minisweagent/agents/default.py"
     ```
 
-Essentially, `DefaultAgent.run` calls `DefaultAgent.step` in a loop until the agent has finished its task.
+本质上，`DefaultAgent.run` 会循环调用 `DefaultAgent.step`，直到智能体完成任务。
 
-The `step` method is the core of the agent:
+`step` 方法是智能体的核心：
 
 ```python
 def step(self) -> list[dict]:
     return self.execute_actions(self.query())
 ```
 
-It does the following:
+它做了以下几件事：
 
-1. Queries the model for a response based on the current messages (`DefaultAgent.query`, calling `Model.query`)
-2. Executes all actions in the response (`DefaultAgent.execute_actions`, calling `Environment.execute` for each action)
-3. Formats the observation messages via `Model.format_observation_messages`
-4. Adds the observations to the messages
+1. 基于当前消息向模型请求响应（`DefaultAgent.query`，内部调用 `Model.query`）
+2. 执行响应中的所有动作（`DefaultAgent.execute_actions`，对每个动作调用 `Environment.execute`）
+3. 通过 `Model.format_observation_messages` 格式化观察消息
+4. 把观察结果加入消息列表
 
-Here's `query`:
+下面是 `query`：
 
 ```python
 def query(self) -> dict:
@@ -82,7 +82,7 @@ def query(self) -> dict:
     return message
 ```
 
-And `execute_actions`:
+以及 `execute_actions`：
 
 ```python
 def execute_actions(self, message: dict) -> list[dict]:
@@ -90,25 +90,25 @@ def execute_actions(self, message: dict) -> list[dict]:
     return self.add_messages(*self.model.format_observation_messages(...))
 ```
 
-The interesting bit is how we handle error conditions and the finish condition:
-This uses exceptions that inherit from `InterruptAgentFlow`. All these exceptions carry messages that get added to the trajectory.
+有意思的地方在于我们如何处理错误情况和完成条件：
+这里使用了继承自 `InterruptAgentFlow` 的异常。所有这些异常都携带会被加入轨迹的消息。
 
-- `Submitted` is raised when the agent has finished its task. For example, the environment checks if the command output starts with a magic string:
+- 当智能体完成任务时，抛出 `Submitted`。例如，环境会检查命令输出是否以某个魔法字符串开头：
 
     ```python
-    # In Environment.execute
+    # 在 Environment.execute 中
     def _check_finished(self, output: dict):
         lines = output.get("output", "").lstrip().splitlines(keepends=True)
         if lines and lines[0].strip() == "COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT":
             raise Submitted({"role": "exit", "content": ..., "extra": {...}})
     ```
 
-- `LimitsExceeded` is raised when we hit a cost or step limit
-- `FormatError` is raised when the output from the LM is not in the expected format
-- `TimeoutError` is raised when the action took too long to execute
-- `UserInterruption` is raised when the user interrupts the agent
+- 当我们达到成本或步数上限时，抛出 `LimitsExceeded`
+- 当语言模型的输出不符合预期格式时，抛出 `FormatError`
+- 当动作执行时间过长时，抛出 `TimeoutError`
+- 当用户中断智能体时，抛出 `UserInterruption`
 
-The `DefaultAgent.run` method catches these exceptions and handles them by adding the corresponding messages to the messages list. The loop continues until a message with `role="exit"` is added.
+`DefaultAgent.run` 方法会捕获这些异常，并通过把相应的消息加入消息列表来处理它们。循环会一直持续，直到加入一条 `role="exit"` 的消息。
 
 ```python
 while True:
@@ -120,6 +120,6 @@ while True:
         break
 ```
 
-Using exceptions for the control flow is a lot easier than passing around flags and states, especially when extending or subclassing the agent.
+用异常来控制流程，比到处传递标志位和状态要简单得多，尤其是在扩展或子类化智能体时。
 
 {% include-markdown "_footer.md" %}

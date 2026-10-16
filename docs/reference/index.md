@@ -1,15 +1,15 @@
-# API Reference
+# API 参考
 
-This section provides detailed documentation for all classes and modules in mini-SWE-agent.
+本节提供 mini-SWE-agent 中所有类和模块的详细文档。
 
-!!! tip "Understanding the agent"
-    Before diving into the API reference, we recommend reading the [control flow documentation](../advanced/control_flow.md) to understand how the agent works.
+!!! tip "理解智能体"
+    在深入 API 参考之前，我们建议先阅读[控制流文档](../advanced/control_flow.md)，以了解智能体是如何工作的。
 
-## Sections
+## 章节
 
-- **[Agents](agents/default.md)** - Agent implementations and control flow
-- **[Models](models/overview.md)** - Language model interfaces
-- **[Environments](environments/local.md)** - Command execution environments
-- **[Run Scripts](run/mini.md)** - Entry points and CLI interfaces
+- **[Agents](agents/default.md)** - 智能体实现与控制流
+- **[Models](models/overview.md)** - 语言模型接口
+- **[Environments](environments/local.md)** - 命令执行环境
+- **[Run Scripts](run/mini.md)** - 入口点与 CLI 接口
 
 {% include-markdown "../_footer.md" %}

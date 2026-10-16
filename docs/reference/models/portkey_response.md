@@ -1,20 +1,20 @@
 # Portkey Response API Model
 
-This model is used to use [portkey](https://portkey.ai/) with the OpenAI Responses API.
+该模型用于把 [portkey](https://portkey.ai/) 与 OpenAI Responses API 配合使用。
 
-!!! note "Portkey Response API Model class"
+!!! note "Portkey Response API 模型类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/portkey_response_model.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/portkey_response_model.py)
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/models/portkey_response_model.py"
         ```
 
-!!! tip "Guide"
+!!! tip "指南"
 
-    Setting up Portkey models is covered in the [quickstart guide](../../models/quickstart.md).
+    Portkey 模型的设置都在[快速入门指南](../../models/quickstart.md)中有所介绍。
 
 ::: minisweagent.models.portkey_response_model
 

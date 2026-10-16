@@ -1,71 +1,71 @@
-# Quick start
+# 快速入门
 
-!!! tip "Installation Options"
+!!! tip "安装方式"
 
     === "pip"
 
-        Use pip to install `mini` in your current environment:
+        使用 pip 在当前环境中安装 `mini`：
 
         ```bash
         pip install mini-swe-agent
         ```
 
-        And try our command line interface
+        然后试试我们的命令行界面：
 
         ```bash
         mini  # CLI
-        mini-extra  # extra utilities
+        mini-extra  # 额外实用工具
         ```
 
-    === "uv (isolated)"
+    === "uv（隔离环境）"
 
-        Use `uv`/`uvx` ([installation](https://docs.astral.sh/uv/getting-started/installation/)) to directly run the `mini` CLI.
-        Use this if you're only interested in the CLI but don't need python bindings (`mini` will be installed in an anonymous virtual environment).
+        使用 `uv`/`uvx`（[安装说明](https://docs.astral.sh/uv/getting-started/installation/)）直接运行 `mini` CLI。
+        如果你只对 CLI 感兴趣、不需要 Python 绑定，就用这种方式（`mini` 会被安装到一个匿名虚拟环境中）。
 
-        Quickly install + run:
+        快速安装并运行：
 
         ```bash
         uvx mini-swe-agent  # CLI
-        uvx --from mini-swe-agent mini-extra  # extra utilities
+        uvx --from mini-swe-agent mini-extra  # 额外实用工具
         ```
 
-        Permanently install
+        永久安装：
 
         ```bash
         uv tool install mini-swe-agent
-        # then
+        # 然后
         mini  # CLI
-        mini-extra  # extra utilities
+        mini-extra  # 额外实用工具
         ```
 
-    === "pipx (isolated)"
+    === "pipx（隔离环境）"
 
-        Use pipx ([installation](https://pipx.pypa.io/stable/installation/)) to directly run the `mini` CLI.
-        Use this if you're only interested in the CLI but don't need python bindings (`mini` will be installed in an anonymous virtual environment).
+        使用 pipx（[安装说明](https://pipx.pypa.io/stable/installation/)）直接运行 `mini` CLI。
+        如果你只对 CLI 感兴趣、不需要 Python 绑定，就用这种方式（`mini` 会被安装到一个匿名虚拟环境中）。
 
-        Quick install + run:
+        快速安装并运行：
 
         ```bash
         # CLI
         pipx run mini-swe-agent
-        # Extra utilities
+        # 额外实用工具
         pipx run --spec mini-swe-agent mini-extra
         ```
 
-        or for a persistent installation (recommended):
+        或者进行持久安装（推荐）：
 
         ```bash
         pipx install mini-swe-agent
-        # then
+        # 然后
         mini  # CLI
-        mini-extra  # extra utilities
+        mini-extra  # 额外实用工具
         ```
 
-        If the invocation doesn't immediately work, you might need to run `pipx ensurepath`.
+        如果命令无法立即生效，你可能需要运行 `pipx ensurepath`。
 
-    === "From source/dev"
+    === "从源码安装 / 开发模式"
 
-        For development or if you want to customize the agent:
+        用于开发，或你想自定义智能体时：
 
         ```bash
         git clone https://github.com/SWE-agent/mini-swe-agent.git
@@ -73,62 +73,61 @@
         pip install -e .
         ```
 
-        Then run:
+        然后运行：
 
         ```bash
         mini  # CLI
-        mini-extra  # extra utilities
+        mini-extra  # 额外实用工具
         ```
 
-        Or pick a [run script](https://github.com/SWE-agent/mini-swe-agent/tree/main/src/minisweagent/run):
+        或者挑一个[运行脚本](https://github.com/SWE-agent/mini-swe-agent/tree/main/src/minisweagent/run)：
 
         ```bash
         python src/minisweagent/run/hello_world.py
         ```
 
-        If you are planning to contribute, please also install the dev dependencies
-        and `pre-commit` hooks:
+        如果你打算参与贡献，还请安装开发依赖和 `pre-commit` 钩子：
 
         ```bash
         pip install -e '.[dev]'
         pip install pre-commit && pre-commit install
         ```
 
-        To check your installation, you can run `pytest -n auto` in the root folder.
-        This should run all tests in parallel (should take ~3min to run).
+        要检查安装是否正常，可以在根目录下运行 `pytest -n auto`。
+        这会并行运行所有测试（大约需要 3 分钟）。
 
-        Note that there are still some extra dependencies that are not installed by default
-        (basically anything that is in an `.../extra/...` folder).
-        If you truly want to get the maximal package, you can run `pip install -e '.[full]'`
+        注意，还有一些额外依赖默认不会安装
+        （基本上所有位于 `.../extra/...` 文件夹中的内容）。
+        如果你确实想要安装最完整的包，可以运行 `pip install -e '.[full]'`
 
-!!! note "Changelog"
+!!! note "更新日志"
 
-    Please see the [github release notes](https://github.com/SWE-agent/mini-swe-agent/releases) for recent changes.
+    最近的变更请查看 [GitHub 发行说明](https://github.com/SWE-agent/mini-swe-agent/releases)。
 
-!!! info "Upgrading to v2?"
+!!! info "要升级到 v2 吗？"
 
-    Check out our [v2 migration guide](advanced/v2_migration.md) for all the changes and how to update your code.
+    请查看我们的 [v2 迁移指南](advanced/v2_migration.md)，了解所有变更以及如何更新你的代码。
 
-!!! example "Example Prompts"
+!!! example "示例提示词"
 
-    Try mini-SWE-agent with these example prompts:
+    用这些示例提示词试试 mini-SWE-agent：
 
-    - Implement a Sudoku solver in python in the `sudoku` folder. Make sure the codebase is modular and well tested with pytest.
-    - Please run pytest on the current project, discover failing unittests and help me fix them. Always make sure to test the final solution.
-    - Help me document & type my codebase by adding short docstrings and type hints.
+    - 在 `sudoku` 文件夹中用 python 实现一个数独求解器。确保代码库模块化，并用 pytest 做好充分测试。
+    - 请对当前项目运行 pytest，找出失败的单元测试并帮我修复。务必确保最终方案经过测试。
+    - 帮我通过添加简短的 docstring 和类型注解，为代码库补充文档和类型信息。
 
-## Models
+## 模型
 
-!!! note "Models should be set up the first time you run `mini`"
+!!! note "首次运行 `mini` 时应完成模型设置"
 
-    * If you missed the setup wizard, just run `mini-extra config setup`
-    * For more information, please check the [model setup quickstart](models/quickstart.md).
-    * If you want to use local models, please check this [guide](models/local_models.md).
+    * 如果你错过了设置向导，只需运行 `mini-extra config setup`
+    * 更多信息请查看[模型设置快速入门](models/quickstart.md)。
+    * 如果你想使用本地模型，请查看这份[指南](models/local_models.md)。
 
-    Tip: Please always include the provider in the model name, e.g., `anthropic/claude-...`.
+    提示：请务必在模型名称中包含提供商，例如 `anthropic/claude-...`。
 
-!!! success "Which model to use?"
+!!! success "该用哪个模型？"
 
-    We recommend using `anthropic/claude-opus-4-6-20260205` for most tasks.
-    For openai models, we recommend using `openai/gpt-5.4` or `openai/gpt-5.4-mini`.
-    You can check scores of different models at our [SWE-bench (bash-only)](https://swebench.com) leaderboard.
+    对于大多数任务，我们推荐使用 `anthropic/claude-opus-4-6-20260205`。
+    对于 openai 的模型，我们推荐使用 `openai/gpt-5.4` 或 `openai/gpt-5.4-mini`。
+    你可以在我们的 [SWE-bench (bash-only)](https://swebench.com) 排行榜上查看不同模型的得分。

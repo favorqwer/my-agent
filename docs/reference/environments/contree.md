@@ -1,11 +1,11 @@
 # ConTree
 
-!!! note "ConTree Environment class"
+!!! note "ConTree 环境类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/extra/contree.py)
-    - Requires [ConTree](https://contree.dev) token
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/extra/contree.py)
+    - 需要 [ConTree](https://contree.dev) token
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/environments/extra/contree.py"
@@ -13,24 +13,24 @@
 
 ::: minisweagent.environments.extra.contree
 
-This environment executes commands in [ConTree](https://contree.dev) sandboxes using [ConTree SDK](https://github.com/nebius/contree-sdk)
+该环境通过 [ConTree SDK](https://github.com/nebius/contree-sdk) 在 [ConTree](https://contree.dev) 沙箱中执行命令
 
-## Setup
+## 设置
 
-1. Install the dependencies:
+1. 安装依赖：
    ```bash
    pip install "mini-swe-agent[contree]"
    ```
 
-2. Set up ConTree token and base_url:
+2. 设置 ConTree 的 token 和 base_url：
    ```bash
    export CONTREE_TOKEN="your-contree-token"
    export CONTREE_BASE_URL="your-given-base-url-for-contree"
    ```
 
-## Usage
+## 用法
 
-Run mini-swe-agent like with any other environment:
+像使用任何其他环境一样运行 mini-swe-agent：
 ```
 mini-extra swebench \
     --subset verified \
@@ -39,7 +39,7 @@ mini-extra swebench \
     --environment-class contree
 ```
 
-It can be specified both through cli parameter or by setting `environment_class` to `contree` in your swebench.yaml config
+它既可以通过 CLI 参数指定，也可以在 swebench.yaml 配置中把 `environment_class` 设为 `contree`
 
 {% include-markdown "../../_footer.md" %}
 

@@ -1,8 +1,8 @@
 # `mini`
 
-!!! abstract "Overview"
+!!! abstract "概览"
 
-    * `mini` is a REPL-style interactive command line interface for using mini-SWE-agent in the local environment (as opposed to workflows that require sandboxing or large scale batch processing).
+    * `mini` 是一个 REPL 风格的交互式命令行界面，用于在本地环境中使用 mini-SWE-agent（相对于需要沙箱或大规模批处理的工作流而言）。
 
 <figure markdown="span">
   <div class="gif-container gif-container-styled" data-glightbox-disabled>
@@ -13,58 +13,58 @@
 </figure>
 
 
-## Command line options
+## 命令行选项
 
-Useful switches:
+常用开关：
 
-- `-h`/`--help`: Show help
-- `-t`/`--task`: Specify a task to run (else you will be prompted)
-- `-c`/`--config`: Specify a config file to use, else we will use [`mini.yaml`](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/mini.yaml) or the config `MSWEA_MINI_CONFIG_PATH` environment variable (see [global configuration](../advanced/global_configuration.md)).
-  It's enough to specify the name of the config file, e.g., `-c mini.yaml` (see [global configuration](../advanced/global_configuration.md) for how it is resolved).
-- `-m`/`--model`: Specify a model to use, else we will use the model `MSWEA_MODEL_NAME` environment variable (see [global configuration](../advanced/global_configuration.md))
-- `-y`/`--yolo`: Start in `yolo` mode (see below)
+- `-h`/`--help`：显示帮助
+- `-t`/`--task`：指定要运行的任务（否则会提示你输入）
+- `-c`/`--config`：指定要使用的配置文件，否则我们会使用 [`mini.yaml`](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/mini.yaml) 或 `MSWEA_MINI_CONFIG_PATH` 环境变量指定的配置（参见[全局配置](../advanced/global_configuration.md)）。
+  只写出配置文件名即可，例如 `-c mini.yaml`（配置文件如何解析请参见[全局配置](../advanced/global_configuration.md)）。
+- `-m`/`--model`：指定要使用的模型，否则我们会使用 `MSWEA_MODEL_NAME` 环境变量指定的模型（参见[全局配置](../advanced/global_configuration.md)）
+- `-y`/`--yolo`：以 `yolo` 模式启动（见下文）
 
-## Modes of operation
+## 运行模式
 
-`mini` provides three different modes of operation
+`mini` 提供三种不同的运行模式：
 
-- `confirm` (`/c`): The LM proposes an action and the user is prompted to confirm (press Enter) or reject (enter a rejection message)
-- `yolo` (`/y`): The action from the LM is executed immediately without confirmation
-- `human` (`/u`): The user takes over to type and execute commands
+- `confirm`（`/c`）：语言模型提出一个动作，用户被提示确认（按回车）或拒绝（输入拒绝理由）
+- `yolo`（`/y`）：语言模型给出的动作立即执行，无需确认
+- `human`（`/u`）：由用户接管，自行输入并执行命令
 
-You can switch between the modes with the `/c`, `/y`, and `/u` commands that you can enter any time the agent is waiting for input.
-You can also press `Ctrl+C` to interrupt the agent at any time, allowing you to switch between modes.
+你可以在智能体等待输入的任何时候输入 `/c`、`/y`、`/u` 命令来切换模式。
+你也可以随时按 `Ctrl+C` 中断智能体，从而切换模式。
 
-`mini` starts in `confirm` mode by default. To start in `yolo` mode, you can add `-y`/`--yolo` to the command line.
+`mini` 默认以 `confirm` 模式启动。要以 `yolo` 模式启动，可以在命令行中加上 `-y`/`--yolo`。
 
-## Miscellaneous tips
+## 其他提示
 
-- `mini` saves the full history of your last run to your global config directory.
-  The path to the directory is printed when you start `mini`.
+- `mini` 会把上次运行的完整历史记录保存到你的全局配置目录中。
+  该目录的路径会在你启动 `mini` 时打印出来。
 
-## Implementation
+## 实现
 
-??? note "Default config"
+??? note "默认配置"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/mini.yaml)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/mini.yaml)
 
     ```yaml
     --8<-- "src/minisweagent/config/mini.yaml"
     ```
 
-??? note "Run script"
+??? note "运行脚本"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py)
-    - [API reference](../reference/run/mini.md)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/run/mini.py)
+    - [API 参考](../reference/run/mini.md)
 
     ```python
     --8<-- "src/minisweagent/run/mini.py"
     ```
 
-??? note "Agent class"
+??? note "智能体类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/agents/interactive.py)
-    - [API reference](../reference/agents/interactive.md)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/agents/interactive.py)
+    - [API 参考](../reference/agents/interactive.md)
 
     ```python
     --8<-- "src/minisweagent/agents/interactive.py"

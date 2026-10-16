@@ -1,24 +1,24 @@
 # Litellm Response Model
 
-!!! note "LiteLLM Response API Model class"
+!!! note "LiteLLM Response API 模型类"
 
-    - [Read on GitHub](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_response_model.py)
+    - [在 GitHub 上阅读](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_response_model.py)
 
-    ??? note "Full source code"
+    ??? note "完整源代码"
 
         ```python
         --8<-- "src/minisweagent/models/litellm_response_model.py"
         ```
 
-!!! tip "When to use this model"
+!!! tip "何时使用这个模型"
 
-    * Use this model class when you want to use OpenAI's [Responses API](https://platform.openai.com/docs/api-reference/responses) with native tool calling.
-    * This is particularly useful for models like GPT-5 that benefit from the extended thinking/reasoning capabilities provided by the Responses API.
-    * This model maintains conversation state across turns using `previous_response_id`.
+    * 当你想使用 OpenAI 的 [Responses API](https://platform.openai.com/docs/api-reference/responses) 并配合原生工具调用时，请使用这个模型类。
+    * 这对于 GPT-5 之类受益于 Responses API 提供的扩展思考／推理能力的模型特别有用。
+    * 该模型通过 `previous_response_id` 跨轮次维护对话状态。
 
-## Usage
+## 用法
 
-To use the Response API model, specify `model_class: "litellm_response"` in your agent config:
+要使用 Response API 模型，请在智能体配置中指定 `model_class: "litellm_response"`：
 
 ```yaml
 model:
@@ -30,7 +30,7 @@ model:
       effort: "high"
 ```
 
-Or via command line:
+或者通过命令行：
 
 ```bash
 mini -m "openai/gpt-5.2" --model-class litellm_response
