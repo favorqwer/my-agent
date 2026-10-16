@@ -226,4 +226,3 @@ model:
     submit your solution (you will not be able to continue working on this task after that).
     {%- endif %}
   model_name: "minimax/minimax-m2"
-  model_class: openrouter

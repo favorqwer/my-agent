@@ -7,7 +7,7 @@ from jinja2 import StrictUndefined, Template
 
 from minisweagent.exceptions import FormatError
 
-# OpenRouter/OpenAI Responses API uses a flat structure (no nested "function" key)
+# The Responses API uses a flat structure (no nested "function" key)
 BASH_TOOL_RESPONSE_API = {
     "type": "function",
     "name": "bash",
