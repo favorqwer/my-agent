@@ -118,7 +118,17 @@ def _child_env(configured: dict[str, str]) -> dict[str, str]:
         # Windows programs otherwise write in the legacy codepage (e.g. cp936), which we cannot decode
         env.setdefault("PYTHONUTF8", "1")
         env.setdefault("PYTHONIOENCODING", "utf-8")
+        # `shell=True` cannot find cmd.exe in a stripped down environment without %ComSpec%
+        env.setdefault("COMSPEC", str(Path(env.get("SystemRoot", r"C:\Windows")) / "System32" / "cmd.exe"))
     return env
+
+
+def _kill_process_tree(process: subprocess.Popen) -> None:
+    """Kill the process and all its children (`process.kill()` would leave grandchildren running on Windows)."""
+    if os.name == "nt":
+        subprocess.run(["taskkill", "/F", "/T", "/PID", str(process.pid)], capture_output=True, check=False)
+    else:
+        os.killpg(process.pid, signal.SIGKILL)
 
 
 def _decode(raw: bytes, encoding: str = "") -> str:
@@ -157,7 +167,7 @@ def _run(
     try:
         stdout, _ = process.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
-        os.killpg(process.pid, signal.SIGKILL) if os.name == "posix" else process.kill()
+        _kill_process_tree(process)
         stdout, _ = process.communicate()
         raise subprocess.TimeoutExpired(command, timeout, output=_decode(stdout, encoding))
     return subprocess.CompletedProcess(command, process.returncode, stdout=_decode(stdout, encoding))
