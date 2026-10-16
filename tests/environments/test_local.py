@@ -73,7 +73,8 @@ def test_local_environment_custom_cwd():
 
         result = env.execute({"command": "pwd"})
         assert result["returncode"] == 0
-        assert temp_dir in result["output"]
+        # Git Bash on Windows reports POSIX paths (e.g. /tmp/...), so we only compare the directory name
+        assert Path(result["output"].strip()).name == Path(temp_dir).name
 
 
 def test_local_environment_cwd_parameter_override():
@@ -84,7 +85,7 @@ def test_local_environment_cwd_parameter_override():
         # Execute with different cwd parameter
         result = env.execute({"command": "pwd"}, cwd=temp_dir2)
         assert result["returncode"] == 0
-        assert temp_dir2 in result["output"]
+        assert Path(result["output"].strip()).name == Path(temp_dir2).name
 
 
 def test_local_environment_default_cwd():
@@ -94,7 +95,7 @@ def test_local_environment_default_cwd():
 
     result = env.execute({"command": "pwd"})
     assert result["returncode"] == 0
-    assert current_dir in result["output"]
+    assert Path(result["output"].strip()).name == Path(current_dir).name
 
 
 def test_local_environment_command_failure():

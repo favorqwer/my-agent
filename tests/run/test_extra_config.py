@@ -376,7 +376,7 @@ class TestConfigEdit:
     """Test the edit function."""
 
     def test_edit_with_default_editor(self, tmp_path):
-        """Test edit function with default editor (nano)."""
+        """Test edit function with the platform's default editor."""
         config_file = tmp_path / ".env"
         config_file.write_text("MSWEA_MODEL_NAME=test")
 
@@ -387,7 +387,7 @@ class TestConfigEdit:
         ):
             edit()
 
-            mock_run.assert_called_once_with(["nano", config_file])
+            mock_run.assert_called_once_with(["notepad" if os.name == "nt" else "nano", config_file])
 
     def test_edit_with_custom_editor(self, tmp_path):
         """Test edit function with custom editor."""
