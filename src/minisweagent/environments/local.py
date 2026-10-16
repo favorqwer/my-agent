@@ -1,7 +1,9 @@
 import os
 import platform
+import shutil
 import signal
 import subprocess
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel
@@ -14,19 +16,30 @@ class LocalEnvironmentConfig(BaseModel):
     cwd: str = ""
     env: dict[str, str] = {}
     timeout: int = 30
+    interpreter: list[str] = []
+    """Command used to interpret commands, e.g. ["bash", "-c"]. Empty (default) means the platform shell
+    on POSIX and Git Bash (falling back to cmd.exe if Git is not installed) on Windows.
+    Set it explicitly (e.g. ["cmd", "/c"]) to force a specific shell."""
 
 
 class LocalEnvironment:
     def __init__(self, *, config_class: type = LocalEnvironmentConfig, **kwargs):
-        """This class executes bash commands directly on the local machine."""
+        """This class executes commands directly on the local machine."""
         self.config = config_class(**kwargs)
+        self.config.interpreter = self.config.interpreter or _default_interpreter()
 
     def execute(self, action: dict, cwd: str = "", *, timeout: int | None = None) -> dict[str, Any]:
         """Execute a command in the local environment and return the result as a dict."""
         command = action.get("command", "")
         cwd = cwd or self.config.cwd or os.getcwd()
         try:
-            result = _run(command, cwd, os.environ | self.config.env, timeout or self.config.timeout)
+            result = _run(
+                command,
+                cwd,
+                os.environ | self.config.env,
+                timeout or self.config.timeout,
+                interpreter=self.config.interpreter,
+            )
             output = {"output": result.stdout, "returncode": result.returncode, "exception_info": ""}
         except Exception as e:
             raw_output = getattr(e, "output", None)
@@ -69,11 +82,43 @@ class LocalEnvironment:
         }
 
 
-def _run(command: str, cwd: str, env: dict[str, str], timeout: int) -> subprocess.CompletedProcess[str]:
+def _default_interpreter() -> list[str]:
+    """Use Git Bash on Windows, because the agent's prompts assume a POSIX shell."""
+    if os.name != "nt" or not (bash := _find_git_bash()):
+        return []
+    return [bash, "-c"]
+
+
+def _find_git_bash() -> str | None:
+    """Find a native Git Bash, skipping the WSL shim (which would run commands in a different filesystem)."""
+    local_app_data = os.getenv("LOCALAPPDATA")
+    # Fall back to the default install locations, because the environment might be stripped down
+    roots = [
+        os.getenv("ProgramFiles") or r"C:\Program Files",
+        os.getenv("ProgramFiles(x86)") or r"C:\Program Files (x86)",
+        f"{local_app_data}\\Programs" if local_app_data else "",
+    ]
+    candidates = [Path(root) / "Git" / "bin" / "bash.exe" for root in roots if root]
+    if from_path := shutil.which("bash"):
+        candidates.append(Path(from_path))
+    return next((str(path) for path in candidates if path.is_file() and not _is_wsl_shim(path)), None)
+
+
+def _is_wsl_shim(path: Path) -> bool:
+    return path.name.lower() == "bash.exe" and any(part.lower() in {"system32", "windowsapps"} for part in path.parts)
+
+
+def _run(
+    command: str,
+    cwd: str,
+    env: dict[str, str],
+    timeout: int,
+    interpreter: list[str] | None = None,
+) -> subprocess.CompletedProcess[str]:
     """Like subprocess.run, but kills the whole process group on timeout so no children are orphaned."""
     process = subprocess.Popen(
-        command,
-        shell=True,
+        [*interpreter, command] if interpreter else command,
+        shell=not interpreter,
         text=True,
         cwd=cwd,
         env=env,
