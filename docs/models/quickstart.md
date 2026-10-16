@@ -5,7 +5,7 @@
     * 大多数情况下，你只需运行 `mini-extra config setup` 即可设置默认模型和 API key。
       首次运行 `mini` 时应该也会自动运行它。
     * 默认情况下，我们通过 [`litellm`](https://github.com/BerriAI/litellm) 支持所有模型。
-    * 我们也支持通过 [Openrouter](https://openrouter.ai/) 和 [Portkey](https://portkey.ai/) 使用模型。
+    * 通过 `model_kwargs` 里的 `api_base` 与 `api_key`，还可以接入任何 OpenAI 兼容的服务（第三方中转站、OpenRouter、OpenCode Go 等）。
 
 ## 设置 API key
 
@@ -71,8 +71,6 @@
     XAI_API_KEY
     XINFERENCE_API_KEY
     ```
-
-    此外，Portkey 模型使用 `PORTKEY_API_KEY` 环境变量。
 
 ## 选择模型
 
@@ -160,22 +158,20 @@
           effort: "high"
     ```
 
-=== "OpenRouter"
+=== "OpenAI 兼容的中转站"
 
-    本示例显式把模型类设为 `openrouter`（更多细节见下一节）。
-    它还显式指定了提供商，以禁用它们之间的切换（如果你需要非常一致的成本行为，
-    例如做基准评测，这会很有用；但如果你只是想要低延迟和好价格，则不推荐这样做）。
+    用 `api_base` 就能指向任何 OpenAI 兼容的服务（中转站、OpenCode Go、自建网关等）：
 
     ```yaml
     model:
-        model_name: "moonshotai/kimi-k2-0905"
-        model_class: "openrouter"
+        model_name: "openai/gpt-5.4"        # 前缀决定走 OpenAI 协议
         model_kwargs:
-            temperature: 0.0
-            provider:
-              allow_fallbacks: false
-              only: ["Moonshot AI"]
+            api_base: "https://your-relay.example.com/v1"
+            drop_params: true
     ```
+
+    非官方端点通常算不出成本，建议同时设 `model.cost_tracking: "ignore_errors"`，
+    否则会因为拿不到价格而报错。也可以把地址和密钥放到全局配置（`OPENAI_API_BASE`、`OPENAI_API_KEY`）。
 
 === "本地模型"
 
@@ -195,25 +191,13 @@
 
 以下是配置特定模型的更多示例：
 
-=== "Gemini 3（Openrouter）"
+=== "Gemini 3"
 
     ```yaml
     model:
-        model_name: "google/gemini-3-pro-preview"
-        model_class: openrouter
+        model_name: "gemini/gemini-3-pro-preview"
         model_kwargs:
             temperature: 0.0
-    ```
-
-=== "GPT 5.1 medium（Portkey）"
-
-    ```yaml
-    model:
-        model_name: "@openai/gpt-5.1"
-        model_class: portkey
-        model_kwargs:
-            reasoning_effort: "medium"
-            verbosity: "medium"
     ```
 
 === "Claude Haiku 4.5"
@@ -225,14 +209,6 @@
             temperature: 0.0
     ```
 
-=== "GPT 5 mini（Portkey）"
-
-    ```yaml
-    model:
-        model_name: "@openai/gpt-5-mini"
-        model_class: portkey
-    ```
-
 === "Deepseek"
 
     ```yaml
@@ -242,12 +218,11 @@
             temperature: 0.0
     ```
 
-=== "Minimax（Openrouter）"
+=== "Minimax"
 
     ```yaml
     model:
         model_name: "minimax/minimax-m2"
-        model_class: openrouter
         model_kwargs:
             temperature: 0.0
     ```
@@ -263,48 +238,40 @@
 
 例如：
 
-=== "Openrouter 模型"
+=== "litellm_response（Responses API）"
 
     ```bash
-    mini -m "moonshotai/kimi-k2-0905" --model-class openrouter
+    mini -m "openai/gpt-5.2" --model-class litellm_response
     ```
 
     **或者：**在智能体配置文件中：
 
     ```yaml
     model:
-        model_name: "moonshotai/kimi-k2-0905"
-        model_class: openrouter
+        model_name: "openai/gpt-5.2"
+        model_class: litellm_response
     ```
 
-=== "Portkey 模型"
+=== "自定义模型类（导入路径）"
+
+    直接给类所在的导入路径即可（不必属于 mini-SWE-agent 包）：
 
     ```bash
-    mini -m "claude-sonnet-4-5-20250929" --model-class portkey
-    ```
-
-    **或者：**在智能体配置文件中：
-    ```yaml
-    model:
-        model_name: "claude-sonnet-4-5-20250929"
-        model_class: portkey
+    mini -m "my-model" --model-class mypackage.mymodels.MyModel
     ```
 
 
-* **`litellm`**（[`LitellmModel`](../reference/models/litellm.md)）—— **默认且推荐**。通过 [litellm](https://github.com/BerriAI/litellm) 支持大多数模型。可用于 OpenAI、Anthropic、Google 等众多提供商。当模型名称包含 "anthropic"、"claude"、"sonnet" 或 "opus" 时，Anthropic 模型会自动获得缓存控制设置。
+* **`litellm`**（[`LitellmModel`](../reference/models/litellm.md)）—— **默认且推荐**。通过 [litellm](https://github.com/BerriAI/litellm) 支持大多数模型（OpenAI 官方及任何兼容中转站、Anthropic、Google、DeepSeek 等）。当模型名称包含 "anthropic"、"claude"、"sonnet" 或 "opus" 时，Anthropic 模型会自动获得缓存控制设置。
 
 * **`litellm_response`**（[`LitellmResponseModel`](../reference/models/litellm_response_toolcall.md)）—— `LitellmModel` 的专用版本，使用 OpenAI 的 Responses API 和原生工具调用。适用于 GPT-5 之类的模型，并且是 GPT-5-codex 之类模型的必需项。它会跨轮次维护对话状态。
 
-* **`openrouter`**（[`OpenRouterModel`](../reference/models/openrouter.md)）—— 直接集成 [OpenRouter](https://openrouter.ai/) API，通过单一端点访问各种模型。
+* **`litellm_textbased`**（[`LitellmTextbasedModel`](../reference/models/litellm.md)）—— 不使用工具调用，而是从模型返回的 markdown 代码块中解析命令（适合不支持工具调用的模型）。
 
-* **`portkey`**（[`PortkeyModel`](../reference/models/portkey.md)）—— 集成 [Portkey](https://portkey.ai/)，以提供增强的可观测性、缓存和路由能力。注意它仍然使用 `litellm` 来计算成本。
-
-此外，还有一些更“另类”的模型类可供使用：
+此外，还有一个测试用的模型类：
 
 * **`deterministic`**（[`DeterministicModel`](../reference/models/test_models.md)）—— 返回预定义的响应，用于测试和开发。
-* **`minisweagent.models.extra.roulette.RouletteModel` 和 `minisweagent.models.extra.roulette.InterleavingModel`**（[`RouletteModel`](../reference/models/extra.md) 和 [`InterleavingModel`](../reference/models/extra.md)）—— 每次查询时随机选择或交替使用多个已配置的模型。更多细节请参见[这篇博客文章](https://www.swebench.com/SWE-bench/blog/2025/08/19/mini-roulette/)。
 
-与后两者类似，你也可以指定指向自己自定义模型类的任意导入路径（即使它还不属于 mini-SWE-agent 包）。
+你也可以指定指向自己自定义模型类的任意导入路径（即使它还不属于 mini-SWE-agent 包）。
 
 --8<-- "docs/_footer.md"
 

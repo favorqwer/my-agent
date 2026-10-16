@@ -147,15 +147,17 @@ model:
 | v1 名称 | v2 名称 |
 |---------|---------|
 | `litellm_response_api` | `litellm_response` |
-| `portkey_response_api` | `portkey_response` |
 
 **新增的模型类：**
 
 | 名称 | 说明 |
 |------|-------------|
 | `litellm_textbased` | 基于文本的解析（正则），替代工具调用 |
-| `openrouter_textbased` | OpenRouter 的基于文本的解析 |
-| `openrouter_response` | 带 response API 的 OpenRouter |
+
+!!! note "本仓库的模型类范围"
+
+    本仓库只保留基于 litellm 的模型类（`litellm`、`litellm_textbased`、`litellm_response`）与测试用的 `deterministic`。
+    上游的 OpenRouter / Portkey / Requesty 平台专用类已被移除；如需这些平台，可用 litellm 自身的前缀（例如 `openrouter/<模型名>`）配合 `api_base` 与密钥接入。
 
 **新增的环境：**
 

@@ -60,7 +60,7 @@
 
 !!! question "你们支持哪些模型？"
 
-    目前，mini-SWE-agent 支持所有 [litellm](https://github.com/BerriAI/litellm) 或 [OpenRouter](https://openrouter.ai/) 支持的模型；
+    目前，mini-SWE-agent 支持所有 [litellm](https://github.com/BerriAI/litellm) 支持的模型（包括 OpenRouter、DeepSeek 等平台提供的模型）；
     如果 `litellm` 不支持某些模型，我们也愿意扩展 `models/` 目录以加入更多模型。
 
 !!! question "如何为某个模型设置 API key？"

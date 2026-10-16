@@ -27,7 +27,7 @@
 [模型](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py)和[运行脚本](https://github.com/SWE-agent/mini-swe-agent/blob/main/src/minisweagent/run/hello_world.py)稍多一点）——没有任何花哨的依赖！
 - **性能出众**：在 [SWE-bench verified 基准](https://www.swebench.com/)上得分超过 74%；启动速度远快于 Claude Code
 - **易于部署**：支持**本地环境**、**docker/podman**、**singularity/apptainer**、**bubblewrap**、**contree** 等
-- **兼容性强**：通过 **litellm**、**openrouter**、**portkey** 等支持所有模型。支持 `/completion` 和 `/response` 端点、交错思考（interleaved thinking）等
+- **兼容性强**：通过 **litellm** 支持所有模型（OpenAI 官方及其兼容中转站、Anthropic、Gemini、DeepSeek 等）。支持 `/completion` 和 `/response` 端点、交错思考（interleaved thinking）等
 - 由打造 [SWE-bench](https://swebench.com)、[SWE-agent](https://swe-agent.com) 等项目的普林斯顿与斯坦福团队构建
 - **经过测试**：[![Codecov](https://img.shields.io/codecov/c/github/swe-agent/mini-swe-agent?style=flat-square)](https://codecov.io/gh/SWE-agent/mini-swe-agent)
 
