@@ -1,12 +1,10 @@
 import json
-import re
 from unittest.mock import MagicMock, patch
 
 import pytest
 from pydantic import BaseModel
 
 from minisweagent import package_dir
-from minisweagent.models.test_models import DeterministicModel, make_output
 from minisweagent.run.benchmarks.swebench import (
     filter_instances,
     get_sb_environment,
@@ -15,20 +13,7 @@ from minisweagent.run.benchmarks.swebench import (
     remove_from_preds_file,
     update_preds_file,
 )
-
-
-def _make_model_from_fixture(text_outputs: list[str], cost_per_call: float = 1.0, **kwargs) -> DeterministicModel:
-    """Create a DeterministicModel from trajectory fixture data (raw text outputs)."""
-
-    def parse_command(text: str) -> list[dict]:
-        match = re.search(r"```mswea_bash_command\s*\n(.*?)\n```", text, re.DOTALL)
-        return [{"command": match.group(1)}] if match else []
-
-    return DeterministicModel(
-        outputs=[make_output(text, parse_command(text), cost=cost_per_call) for text in text_outputs],
-        cost_per_call=cost_per_call,
-        **kwargs,
-    )
+from tests.conftest import make_model_from_fixture
 
 
 @pytest.mark.slow
@@ -40,7 +25,7 @@ def test_swebench_end_to_end(github_test_data, tmp_path, workers, container_exec
 
     with patch("minisweagent.run.benchmarks.swebench.get_model") as mock_get_model:
         # Use side_effect to create a new model instance for each worker
-        mock_get_model.side_effect = lambda **kwargs: _make_model_from_fixture(model_responses, cost_per_call=0.1)
+        mock_get_model.side_effect = lambda **kwargs: make_model_from_fixture(model_responses, cost_per_call=0.1)
 
         main(
             subset="_test",
@@ -355,7 +340,7 @@ def test_redo_existing_false_skips_existing(github_test_data, tmp_path):
     preds_file.write_text(json.dumps(existing_data))
 
     with patch("minisweagent.run.benchmarks.swebench.get_model") as mock_get_model:
-        mock_get_model.side_effect = lambda **kwargs: _make_model_from_fixture(model_responses)
+        mock_get_model.side_effect = lambda **kwargs: make_model_from_fixture(model_responses)
 
         main(
             subset="_test",
@@ -390,7 +375,7 @@ def test_redo_existing_true_overwrites_existing(github_test_data, tmp_path, cont
     preds_file.write_text(json.dumps(existing_data))
 
     with patch("minisweagent.run.benchmarks.swebench.get_model") as mock_get_model:
-        mock_get_model.side_effect = lambda **kwargs: _make_model_from_fixture(model_responses, cost_per_call=0.1)
+        mock_get_model.side_effect = lambda **kwargs: make_model_from_fixture(model_responses, cost_per_call=0.1)
 
         main(
             subset="_test",

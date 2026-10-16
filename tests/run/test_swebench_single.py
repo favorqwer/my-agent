@@ -1,25 +1,10 @@
-import re
 from unittest.mock import Mock, patch
 
 import pytest
 
 from minisweagent import package_dir
-from minisweagent.models.test_models import DeterministicModel, make_output
 from minisweagent.run.benchmarks.swebench_single import main
-
-
-def _make_model_from_fixture(text_outputs: list[str], cost_per_call: float = 1.0, **kwargs) -> DeterministicModel:
-    """Create a DeterministicModel from trajectory fixture data (raw text outputs)."""
-
-    def parse_command(text: str) -> list[dict]:
-        match = re.search(r"```mswea_bash_command\s*\n(.*?)\n```", text, re.DOTALL)
-        return [{"command": match.group(1)}] if match else []
-
-    return DeterministicModel(
-        outputs=[make_output(text, parse_command(text), cost=cost_per_call) for text in text_outputs],
-        cost_per_call=cost_per_call,
-        **kwargs,
-    )
+from tests.conftest import make_model_from_fixture
 
 
 def test_swebench_single_cost_limit_zero_is_preserved():
@@ -72,7 +57,7 @@ def test_swebench_single_end_to_end(github_test_data, tmp_path, container_execut
         ),
         patch("builtins.input", return_value=""),  # For LimitsExceeded handling
     ):
-        mock_get_model.return_value = _make_model_from_fixture(model_responses, cost_per_call=0.1)
+        mock_get_model.return_value = make_model_from_fixture(model_responses, cost_per_call=0.1)
 
         # Test with explicit instance ID
         output_path = tmp_path / "test_output.json"
@@ -113,7 +98,7 @@ def test_swebench_single_end_to_end_exit_immediately(github_test_data, tmp_path,
         ),
         patch("builtins.input", return_value=""),  # For LimitsExceeded handling
     ):
-        mock_get_model.return_value = _make_model_from_fixture(model_responses, cost_per_call=0.1)
+        mock_get_model.return_value = make_model_from_fixture(model_responses, cost_per_call=0.1)
 
         # Test with explicit instance ID
         output_path = tmp_path / "test_output.json"

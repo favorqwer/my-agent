@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from minisweagent.models import GLOBAL_MODEL_STATS
+from minisweagent.models.test_models import DeterministicModel, make_output
 
 
 def pytest_addoption(parser):
@@ -62,6 +63,20 @@ def container_executable(monkeypatch):
         pytest.skip("Neither docker nor podman is available")
     monkeypatch.setenv("MSWEA_DOCKER_EXECUTABLE", exe)
     return exe
+
+
+def make_model_from_fixture(text_outputs: list[str], cost_per_call: float = 1.0, **kwargs) -> DeterministicModel:
+    """Create a DeterministicModel from trajectory fixture data (raw text outputs)."""
+
+    def parse_command(text: str) -> list[dict]:
+        match = re.search(r"```mswea_bash_command\s*\n(.*?)\n```", text, re.DOTALL)
+        return [{"command": match.group(1)}] if match else []
+
+    return DeterministicModel(
+        outputs=[make_output(text, parse_command(text), cost=cost_per_call) for text in text_outputs],
+        cost_per_call=cost_per_call,
+        **kwargs,
+    )
 
 
 def get_test_data(trajectory_name: str) -> dict[str, list[str]]:
