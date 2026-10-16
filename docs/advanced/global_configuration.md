@@ -128,6 +128,20 @@ MSWEA_DOCKER_EXECUTABLE="docker"
 MSWEA_BUBBLEWRAP_EXECUTABLE="bwrap"
 ```
 
+### 其他设置
+
+```bash
+# 自定义全局配置目录（存放 .env 与运行历史）
+# （默认值：由 platformdirs 决定，Windows 上是 %LOCALAPPDATA%\mini-swe-agent\mini-swe-agent）
+MSWEA_GLOBAL_CONFIG_DIR="/path/to/your/config/dir"
+
+# 设置后不再打印启动时的版本号与迁移提示（适合脚本、CI）
+MSWEA_SILENT_STARTUP="1"
+
+# 标记已完成首次运行向导，由 mini-extra config setup 自动写入，一般不需要手动设置
+MSWEA_CONFIGURED="true"
+```
+
 ## 默认运行文件
 
 ```bash
