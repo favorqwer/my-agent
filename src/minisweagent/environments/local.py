@@ -1,3 +1,4 @@
+import locale
 import os
 import platform
 import shutil
@@ -20,6 +21,8 @@ class LocalEnvironmentConfig(BaseModel):
     """Command used to interpret commands, e.g. ["bash", "-c"]. Empty (default) means the platform shell
     on POSIX and Git Bash (falling back to cmd.exe if Git is not installed) on Windows.
     Set it explicitly (e.g. ["cmd", "/c"]) to force a specific shell."""
+    encoding: str = ""
+    """Encoding used to decode command output. Empty (default) tries UTF-8 first, then the platform encoding."""
 
 
 class LocalEnvironment:
@@ -36,9 +39,10 @@ class LocalEnvironment:
             result = _run(
                 command,
                 cwd,
-                os.environ | self.config.env,
+                _child_env(self.config.env),
                 timeout or self.config.timeout,
                 interpreter=self.config.interpreter,
+                encoding=self.config.encoding,
             )
             output = {"output": result.stdout, "returncode": result.returncode, "exception_info": ""}
         except Exception as e:
@@ -108,22 +112,44 @@ def _is_wsl_shim(path: Path) -> bool:
     return path.name.lower() == "bash.exe" and any(part.lower() in {"system32", "windowsapps"} for part in path.parts)
 
 
+def _child_env(configured: dict[str, str]) -> dict[str, str]:
+    env = os.environ | configured
+    if os.name == "nt":
+        # Windows programs otherwise write in the legacy codepage (e.g. cp936), which we cannot decode
+        env.setdefault("PYTHONUTF8", "1")
+        env.setdefault("PYTHONIOENCODING", "utf-8")
+    return env
+
+
+def _decode(raw: bytes, encoding: str = "") -> str:
+    """Decode command output, preferring UTF-8 (as on Linux) and falling back to the platform encoding."""
+    for candidate in (encoding or "utf-8", "mbcs" if os.name == "nt" else locale.getpreferredencoding(False)):
+        try:
+            return _normalize_newlines(raw.decode(candidate))
+        except (UnicodeDecodeError, LookupError):
+            continue
+    return _normalize_newlines(raw.decode("utf-8", errors="replace"))
+
+
+def _normalize_newlines(text: str) -> str:
+    """Translate CRLF/CR to LF, the way subprocess' text mode does."""
+    return text.replace("\r\n", "\n").replace("\r", "\n")
+
+
 def _run(
     command: str,
     cwd: str,
     env: dict[str, str],
     timeout: int,
     interpreter: list[str] | None = None,
+    encoding: str = "",
 ) -> subprocess.CompletedProcess[str]:
     """Like subprocess.run, but kills the whole process group on timeout so no children are orphaned."""
     process = subprocess.Popen(
         [*interpreter, command] if interpreter else command,
         shell=not interpreter,
-        text=True,
         cwd=cwd,
         env=env,
-        encoding="utf-8",
-        errors="replace",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         start_new_session=os.name == "posix",
@@ -133,5 +159,5 @@ def _run(
     except subprocess.TimeoutExpired:
         os.killpg(process.pid, signal.SIGKILL) if os.name == "posix" else process.kill()
         stdout, _ = process.communicate()
-        raise subprocess.TimeoutExpired(command, timeout, output=stdout)
-    return subprocess.CompletedProcess(command, process.returncode, stdout=stdout)
+        raise subprocess.TimeoutExpired(command, timeout, output=_decode(stdout, encoding))
+    return subprocess.CompletedProcess(command, process.returncode, stdout=_decode(stdout, encoding))
