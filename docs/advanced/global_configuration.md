@@ -115,17 +115,9 @@ MSWEA_INSPECTOR_STYLE_PATH="/path/to/your/inspector/style.tcss"
 ### 环境相关设置
 
 ```bash
-# singularity/apptainer 可执行文件的路径／名称
-# （默认值："singularity"）
-MSWEA_SINGULARITY_EXECUTABLE="singularity"
-
 # docker 可执行文件的路径／名称
 # （默认值："docker"）
 MSWEA_DOCKER_EXECUTABLE="docker"
-
-# bubblewrap 可执行文件的路径／名称
-# （默认值："bwrap"）
-MSWEA_BUBBLEWRAP_EXECUTABLE="bwrap"
 ```
 
 ### 其他设置

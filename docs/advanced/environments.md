@@ -3,7 +3,7 @@
 !!! abstract "环境类"
 
     * 环境负责执行语言模型／智能体生成的代码。
-    * 我们提供了多种类，既可以直接在宿主机上执行代码，也可以在容器中执行（例如 Docker、Singularity 等）。
+    * 我们提供了多种类，既可以直接在宿主机上执行代码，也可以在容器中执行（例如 Docker）。
 
 我们支持多种通过不同后端执行代码的环境。
 
@@ -17,18 +17,6 @@
 * **`local`**（[`LocalEnvironment`](../reference/environments/local.md)）。使用 `subprocess.run` 直接在宿主机上执行命令。没有隔离。可以直接在你当前的 Python 环境中工作。
 
 * **`docker`**（[`DockerEnvironment`](../reference/environments/docker.md)）。使用 `docker exec` 执行命令。
-
-* **`singularity`**（[`SingularityEnvironment`](../reference/environments/singularity.md)）—— 在 Singularity/Apptainer 容器中执行命令。在无法使用 Docker 的 HPC 环境中，是不错的 Docker 替代方案。
-
-此外，还有一些更专用的环境类可供使用：
-
-* **`swerex_docker`**（[`SwerexDockerEnvironment`](../reference/environments/swerex_docker.md)）—— 通过 [SWE-ReX](https://github.com/swe-agent/swe-rex) 进行 Docker 执行
-
-* **`swerex_modal`**（[`SwerexModalEnvironment`](../reference/environments/swerex_modal.md)）—— 通过 [SWE-ReX](https://github.com/swe-agent/swe-rex) 在 [Modal](https://modal.com) 云上执行。适合通过远程执行大规模训练编码智能体。
-
-* **`bubblewrap`**（[`BubblewrapEnvironment`](../reference/environments/bubblewrap.md)）—— **仅限 Linux**。使用 [bubblewrap](https://github.com/containers/bubblewrap) 实现轻量、非特权沙箱。实验性功能。
-
-* **`contree`**（[`ContreeEnvironment`](../reference/environments/contree.md)）—— 使用 [ConTree](https://contree.dev/) 实现安全的代码执行沙箱。这是一个为智能体打造、支持类 Git 执行的平台。
 
 ## Windows 上的行为
 
@@ -47,7 +35,7 @@ WSL 自带的 `bash.exe`（位于 `System32` 或 `WindowsApps` 下的垫片）�
 - **输出编码**：Windows 程序默认按本地代码页输出（中文系统是 cp936），我们会强制子进程使用 UTF-8（`PYTHONUTF8=1`、`PYTHONIOENCODING=utf-8`），并在解码时优先尝试 UTF-8、失败后回退到平台编码，以避免中文乱码。你也可以用 `environment.encoding` 显式指定编码。
 - **超时**：Windows 没有进程组，超时时会使用 `taskkill /F /T` 杀掉整棵进程树，避免留下孤儿进程。
 - **交互界面**：`mini` 的交互界面基于 prompt_toolkit，需要真正的 Windows 控制台。建议在 PowerShell 或 Windows Terminal 中运行；在 Git Bash（mintty）等终端里会自动退化为普通的 `input()` 提示（多行输入用空行提交）。
-- **基准评测**：SWE-bench / ProgramBench 需要 docker（Windows 上建议 Docker Desktop + WSL2）；`bubblewrap` 与 `singularity` 仅支持 Linux。
+- **基准评测**：SWE-bench / ProgramBench 需要 docker（Windows 上建议 Docker Desktop + WSL2）。
 
 如果你希望完全使用 Windows 原生的 `cmd.exe`，可以这样配置：
 

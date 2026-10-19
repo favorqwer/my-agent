@@ -159,10 +159,6 @@ model:
     本仓库只保留基于 litellm 的模型类（`litellm`、`litellm_textbased`、`litellm_response`）与测试用的 `deterministic`。
     上游的 OpenRouter / Portkey / Requesty 平台专用类已被移除；如需这些平台，可用 litellm 自身的前缀（例如 `openrouter/<模型名>`）配合 `api_base` 与密钥接入。
 
-**新增的环境：**
-
-- **`swerex_modal`**：在 Modal 上运行环境（需要 `pip install mini-swe-agent[modal]`）
-
 ## 架构变更
 
 1. **职责转移**：模型现在负责解析动作和格式化观察结果。这样就能通过更换模型类在工具调用与文本解析之间切换。Agent 类现在是一个更简单的协调者。

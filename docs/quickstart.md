@@ -96,10 +96,6 @@
         要检查安装是否正常，可以在根目录下运行 `pytest -n auto`。
         这会并行运行所有测试（大约需要 3 分钟）。
 
-        注意，还有一些额外依赖默认不会安装
-        （基本上所有位于 `.../extra/...` 文件夹中的内容）。
-        如果你确实想要安装最完整的包，可以运行 `pip install -e '.[full]'`
-
 !!! note "更新日志"
 
     最近的变更请查看 [GitHub 发行说明](https://github.com/SWE-agent/mini-swe-agent/releases)。

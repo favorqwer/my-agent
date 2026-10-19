@@ -4,7 +4,7 @@
 
 !!! question "mini-SWE-agent 能在我的系统上运行吗？"
 
-    mini-SWE-agent 应该能在任何拥有 bash shell 的系统上运行，或者使用容器运行时（例如 docker、singularity、apptainer 等）来模拟 bash shell 的系统上运行。
+    mini-SWE-agent 应该能在任何拥有 bash shell 的系统上运行，或者使用容器运行时（例如 docker）来模拟 bash shell 的系统上运行。
 
 ??? question "我应该用 mini-SWE-agent 还是 swe-agent？"
 

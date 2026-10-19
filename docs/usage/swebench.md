@@ -61,7 +61,7 @@
 
         高级参数：
 
-        - `--environment-class` - 要使用的环境类型（推荐：`docker` 或 `singularity`）
+        - `--environment-class` - 要使用的环境类型（推荐：`docker`）
 
     === "单个实例（用于调试）"
 
@@ -102,7 +102,7 @@
 
         高级参数：
 
-        - `--environment-class` - 要使用的环境类型（推荐：`docker` 或 `singularity`）
+        - `--environment-class` - 要使用的环境类型（推荐：`docker`）
         - `--exit-immediately` - 当智能体想要结束时立即退出，而不是弹出提示（默认：`False`）
 
 !!! tip "在 SWE-bench 上评测"
@@ -166,12 +166,6 @@
 试着手动运行那条 docker 命令，看看发生了什么（它应该会打印到控制台上）。
 用 `docker ps` 确认它正在运行，并确认你可以用 `docker exec -it <container-id> ls` 得到一些输出。
 
-> 我的 HPC 集群上没有 Docker。
-
-你可以在[智能体配置文件](../advanced/yaml_configuration.md)中把 `environment.environment_class` 设为 `singularity`，
-从而使用 singularity/apptainer 后端；
-或者在命令行中指定 `--environment-class singularity`
-
 > 我可以在环境中运行启动命令吗？
 
 可以，你可以使用 `run.env_startup_command` 配置项，在智能体启动前于环境中运行一条命令。
@@ -189,8 +183,6 @@ run:
 run:
   env_startup_command: "git clone {{ repo_url }} . --force"
 ```
-
-在使用 [`bubblewrap`](../reference/environments/bubblewrap.md) 之类的环境运行时，这可能特别有用。
 
 > SWE-bench 可以使用什么环境？
 

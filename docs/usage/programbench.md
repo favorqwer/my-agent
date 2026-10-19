@@ -50,7 +50,7 @@
 
     高级参数：
 
-    - `--environment-class` - 要使用的环境类型（推荐：`docker` 或 `singularity`）
+    - `--environment-class` - 要使用的环境类型（推荐：`docker`）
     - `--model-class` - 要使用的模型类
 
     docker 镜像 tag 硬编码为 ``:task_cleanroom``（一个不含构建产物的镜像）。
@@ -79,7 +79,7 @@
 ## 常见问题
 
 参见 [SWE-bench 常见问题](swebench.md#常见问题) —— 其中大部分条目（成本上限、KeyboardInterrupt 行为、
-docker 故障排查、singularity 后端）同样适用于 ProgramBench。
+docker 故障排查）同样适用于 ProgramBench。
 
 ## 实现
 
