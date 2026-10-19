@@ -129,7 +129,7 @@ def main(
     model_class: str | None = typer.Option(None, "--model-class", help="Model class to use", rich_help_panel="Advanced"),
     redo_existing: bool = typer.Option(False, "--redo-existing", help="Redo existing instances", rich_help_panel="Data selection"),
     config_spec: list[str] = typer.Option([str(DEFAULT_CONFIG_FILE)], "-c", "--config", help="Config files (merged left to right)", rich_help_panel="Basic"),
-    environment_class: str | None = typer.Option(None, "--environment-class", help="Environment type (e.g., docker, singularity)", rich_help_panel="Advanced"),
+    environment_class: str | None = typer.Option(None, "--environment-class", help="Environment type (e.g., docker)", rich_help_panel="Advanced"),
 ) -> None:
     # fmt: on
     from programbench.utils.instance_filters import filter_instances  # pylint: disable=import-error
