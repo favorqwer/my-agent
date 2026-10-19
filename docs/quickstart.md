@@ -86,11 +86,10 @@
         python src/minisweagent/run/hello_world.py
         ```
 
-        如果你打算参与贡献，还请安装开发依赖和 `pre-commit` 钩子：
+        如果你打算参与贡献，还请安装开发依赖：
 
         ```bash
         pip install -e '.[dev]'
-        pip install pre-commit && pre-commit install
         ```
 
         要检查安装是否正常，可以在根目录下运行 `pytest -n auto`。
