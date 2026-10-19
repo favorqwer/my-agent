@@ -15,7 +15,6 @@ from pathlib import Path
 from typing import Any, Protocol
 
 import dotenv
-from platformdirs import user_config_dir
 from rich.console import Console
 
 from minisweagent.utils.log import logger
@@ -23,7 +22,8 @@ from minisweagent.utils.log import logger
 package_dir = Path(__file__).resolve().parent
 
 
-global_config_dir = Path(os.getenv("MSWEA_GLOBAL_CONFIG_DIR") or user_config_dir("mini-swe-agent"))
+# Keep the global config next to the repository instead of the platform default directory
+global_config_dir = Path(os.getenv("MSWEA_GLOBAL_CONFIG_DIR") or package_dir.parent.parent / "config")
 global_config_dir.mkdir(parents=True, exist_ok=True)
 global_config_file = Path(global_config_dir) / ".env"
 

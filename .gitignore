@@ -6,6 +6,10 @@ preds.json
 *.traj.json
 .env
 traj.json
+
+# 本地配置目录（模型设置、密钥、轨迹、价格表）
+# 前导斜杠很关键：只忽略项目根目录的 config/，不影响 src/minisweagent/config/
+/config/
 .claude/**
 .vscode/**
 
