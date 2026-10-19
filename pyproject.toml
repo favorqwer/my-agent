@@ -39,7 +39,6 @@ dependencies = [
     "rich",
     "python-dotenv",
     "typer",
-    "platformdirs",
     "textual",
     "prompt_toolkit",
     "datasets>=4.5.0",
